@@ -12,6 +12,9 @@ from tempfile import mkdtemp
 from selenium.webdriver.common.by import By
 import boto3
 from botocore.exceptions import ClientError
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 class AppleMusicAPI:
@@ -158,63 +161,78 @@ class AppleMusicAPI:
                 print(f"clicked {genre}")
                 break
 
-    def get_room(self, genre):
-        self.get_genre(genre)
-        print(f"getting room for {genre}")
-        if genre == "Chill":
-            time.sleep(10)
-            if not self.driver.current_url.__contains__(
-                "https://music.apple.com/us/curator/"
-            ):
-                MyException = "You are not on a genre page!"
-                raise MyException("You are not on a genre page!")
-            else:
-                options = self.driver.find_elements(By.CLASS_NAME, "title__button")
-                # time.sleep(2)
-                for o in options:
-                    if o.text == "Study Time":
-                        #         # o.find_element(By.CLASS_NAME, "see-all").click()
-                        o.click()
+    # def get_room(self, genre):
+    #     self.get_genre(genre)
+    #     print(f"getting room for {genre}")
+    #     if genre == "Chill":
+    #         time.sleep(10)
+    #         if not self.driver.current_url.__contains__(
+    #             "https://music.apple.com/us/curator/"
+    #         ):
+    #             MyException = "You are not on a genre page!"
+    #             raise MyException("You are not on a genre page!")
+    #         else:
+    #             options = self.driver.find_elements(By.CLASS_NAME, "title__button")
+    #             # time.sleep(2)
+    #             for o in options:
+    #                 if o.text == "Study Time":
+    #                     #         # o.find_element(By.CLASS_NAME, "see-all").click()
+    #                     o.click()
 
-        else:
-            time.sleep(10)
-            if not self.driver.current_url.__contains__(
-                "https://music.apple.com/us/curator/"
-            ):
-                MyException = "You are not on a genre page!"
-                raise MyException("You are not on a genre page!")
-            else:
-                print(self.driver.current_url)
-                options = self.driver.find_elements(By.CLASS_NAME, "title__button")
-                time.sleep(5)
-                for o in options:
-                    if o.text == "Playlists" or o.text == "Popular Playlists":
-                        o.click()
-                        print("clicked playlists")
+    #     else:
+    #         time.sleep(10)
+    #         if not self.driver.current_url.__contains__(
+    #             "https://music.apple.com/us/curator/"
+    #         ):
+    #             MyException = "You are not on a genre page!"
+    #             raise MyException("You are not on a genre page!")
+    #         else:
+    #             print(self.driver.current_url)
+    #             options = self.driver.find_elements(By.CLASS_NAME, "title__button")
+    #             time.sleep(5)
+    #             for o in options:
+    #                 if o.text == "Playlists" or o.text == "Popular Playlists":
+    #                     o.click()
+    #                     print("clicked playlists")
 
     def get_playlist_ids(self, genre):
-        self.get_room(genre)
-        time.sleep(8)
+        self.driver.get(f"https://music.apple.com/us/room/{genre}")
+
+        wait = WebDriverWait(self.driver, 20)
+        wait.until(EC.url_contains("https://music.apple.com/us/room/"))
+
         ids: List[str] = []
 
         if not self.driver.current_url.__contains__("https://music.apple.com/us/room/"):
             self.driver.refresh()
-            time.sleep(10)
+            wait.until(EC.url_contains("https://music.apple.com/us/room/"))
+
             if not self.driver.current_url.__contains__(
                 "https://music.apple.com/us/room/"
             ):
-                MyException = "You are not on a room page!"
-                raise MyException("You are not on a room page!")
+                raise Exception("You are not on a room page!")
 
         else:
             print(self.driver.current_url)
             print("on room page getting playlist ids")
-            cards = self.driver.find_elements(By.CLASS_NAME, "grid-item")
-            for card in cards:
-                a = card.find_element(By.TAG_NAME, "a")
-                href = a.get_attribute("href")
-                id = href[href.find("pl.") : len(href)]
-                ids.append(id)
+            retry_count = 3
+            for attempt in range(retry_count):
+                try:
+                    cards = self.driver.find_elements(By.CLASS_NAME, "grid-item")
+                    print("cards", len(cards))
+                    for card in cards:
+                        a = card.find_element(By.TAG_NAME, "a")
+                        href = a.get_attribute("href")
+                        id = href[href.find("pl.") : len(href)]
+                        ids.append(id)
+                    break
+                except StaleElementReferenceException:
+                    print("Stale element reference, retrying...")
+                    time.sleep(2)
+
+        if not ids:
+            raise Exception("No playlists found or the page did not load correctly.")
+
         self.playlist_ids = ids
 
     def scrape(self, genre):
@@ -374,7 +392,6 @@ APPLE_TEAM_ID = os.getenv("APPLE_TEAM_ID")
 APPLE_KEY_ID = os.getenv("APPLE_KEY_ID")
 APPLE_PRIVATE_KEY = os.getenv("APPLE_PRIVATE_KEY")
 
-
 if not APPLE_TEAM_ID or not APPLE_KEY_ID or not APPLE_PRIVATE_KEY:
     raise ValueError("Missing required environment variables for Apple Music API")
 
@@ -400,9 +417,9 @@ class StoreTurn:
 
             print(f"\nApple Music:")
 
-            # self.apple_music_client.nmd_a(track["artist"]["am"])
-            # self.apple_music_client.check_song(track["artist"]["am"])
-            # self.apple_music_client.check_album(track["artist"]["am"])
+            self.apple_music_client.nmd_a(track["artist"]["am"])
+            self.apple_music_client.check_song(track["artist"]["am"])
+            self.apple_music_client.check_album(track["artist"]["am"])
             for genre in track["genres"]["am"]:
                 self.apple_music_client.scrape(genre)
                 time.sleep(5)
@@ -455,14 +472,13 @@ def lambda_handler(event, context):
                 "artist": {"s": "Dave Blunts", "am": "Dave Blunts"},
                 "country": ["US"],
                 "genres": {
-                    "am": ["Hip-Hop"],
+                    "am": ["993297962"],
                 },
             }
         ]
     }
 
     options = webdriver.ChromeOptions()
-    service = webdriver.ChromeService("/opt/chromedriver")
 
     options.binary_location = "/opt/chrome/chrome"
     options.add_argument("--headless=new")
@@ -477,6 +493,13 @@ def lambda_handler(event, context):
     options.add_argument(f"--data-path={mkdtemp()}")
     options.add_argument(f"--disk-cache-dir={mkdtemp()}")
     options.add_argument("--remote-debugging-port=9222")
+    service = webdriver.ChromeService("/opt/chromedriver")
+
+    # local
+    # from selenium.webdriver.chrome.service import Service
+    # from webdriver_manager.chrome import ChromeDriverManager
+
+    # service = Service(ChromeDriverManager().install())
 
     driver: WebDriver = webdriver.Chrome(service=service, options=options)
 
