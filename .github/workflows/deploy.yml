@@ -1,4 +1,4 @@
-name: Deploy Lambda and Terraform
+name: Deploy Store Turn
 
 on: workflow_dispatch
 
@@ -16,8 +16,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::742736545134:role/store-turn-github-action
           aws-region: us-east-1
 
       # Step 3: Cleanup old ECR images before building new one
