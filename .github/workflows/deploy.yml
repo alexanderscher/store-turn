@@ -86,6 +86,10 @@ jobs:
             -var "spotify_client_secret=${{ secrets.SPOTIFY_CLIENT_SECRET }}" \
             -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}"
         working-directory: ./tf/setup
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
 
       # Step 12: Apply Terraform changes
       - name: Apply Terraform Changes
@@ -99,3 +103,7 @@ jobs:
           -var "spotify_client_secret=${{ secrets.SPOTIFY_CLIENT_SECRET }}" \
           -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}"
         working-directory: ./tf/setup
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
