@@ -66,15 +66,19 @@ jobs:
       # Step 9: Initialize Terraform
       - name: Initialize Terraform
         run: terraform init
+        working-directory: ./tf
 
       # Step 10: Validate Terraform configuration
       - name: Validate Terraform
         run: terraform validate
+        working-directory: ./tf
 
       # Step 11: Plan Terraform changes
       - name: Plan Terraform Changes
         run: terraform plan
+        working-directory: ./tf
 
       # Step 12: Apply Terraform changes
       - name: Apply Terraform Changes
         run: terraform apply -auto-approve
+        working-directory: ./tf
