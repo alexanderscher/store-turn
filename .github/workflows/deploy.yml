@@ -12,11 +12,11 @@ jobs:
         uses: actions/checkout@v3
 
       # Step 2: Configure AWS Credentials using GitHub Secrets
-      # Make sure you have set these secrets in your GitHub repository settings.
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::742736545134:role/store-turn-github-action
+          role-session-name: github-action-session
           aws-region: us-east-1
 
       # Step 3: Cleanup old ECR images before building new one
