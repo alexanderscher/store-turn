@@ -66,19 +66,36 @@ jobs:
       # Step 9: Initialize Terraform
       - name: Initialize Terraform
         run: terraform init
-        working-directory: ./tf
+        working-directory: ./tf/setup
 
       # Step 10: Validate Terraform configuration
       - name: Validate Terraform
         run: terraform validate
-        working-directory: ./tf
+        working-directory: ./tf/setup
 
       # Step 11: Plan Terraform changes
-      - name: Plan Terraform Changes
-        run: terraform plan
-        working-directory: ./tf
+      - name: Terraform Plan
+        run: |
+          terraform plan \
+            -var "apple_team_id=${{ secrets.APPLE_TEAM_ID }}" \
+            -var "apple_key_id=${{ secrets.APPLE_KEY_ID }}" \
+            -var "apple_private_key=${{ secrets.APPLE_PRIVATE_KEY }}" \
+            -var "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -var "spotify_client_id=${{ secrets.SPOTIFY_CLIENT_ID }}" \
+            -var "spotify_client_secret=${{ secrets.SPOTIFY_CLIENT_SECRET }}" \
+            -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}"
+        working-directory: ./tf/setup
 
       # Step 12: Apply Terraform changes
       - name: Apply Terraform Changes
-        run: terraform apply -auto-approve
-        working-directory: ./tf
+        run: terraform apply -auto-approve \
+          -var "apple_team_id=${{ secrets.APPLE_TEAM_ID }}" \
+          -var "apple_key_id=${{ secrets.APPLE_KEY_ID }}" \
+          -var "apple_private_key=${{ secrets.APPLE_PRIVATE_KEY }}" \
+          -var "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+          -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+          -var "spotify_client_id=${{ secrets.SPOTIFY_CLIENT_ID }}" \
+          -var "spotify_client_secret=${{ secrets.SPOTIFY_CLIENT_SECRET }}" \
+          -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}"
+        working-directory: ./tf/setup
