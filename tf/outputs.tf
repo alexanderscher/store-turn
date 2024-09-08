@@ -1,3 +1,3 @@
 output "lambda_function_arn" {
-  value = aws_lambda_function.spotify_store_turn.arn
+  value = aws_lambda_function.store_turn_spotify.arn
 }

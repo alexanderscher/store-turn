@@ -4,14 +4,14 @@ data "archive_file" "lambda" {
   output_path = "${path.module}/../zip/spotify_lambda.zip"
 }
 
-data "archive_file" "lambda_invoke_store_turn" {
+data "archive_file" "store_turn_lambda_invoke" {
   type        = "zip"
   source_file = "${path.module}/../run/main.py"
   output_path = "${path.module}/../zip/invoke_lambda.zip"
 }
 
-resource "aws_lambda_function" "spotify_store_turn" {
-  function_name    = "spotify-store-turn"
+resource "aws_lambda_function" "store_turn_spotify" {
+  function_name    = "store-turn-spotify"
   role             = aws_iam_role.store_turn_role.arn
   handler          = "main.lambda_handler"
   runtime          = "python3.10"
@@ -29,11 +29,11 @@ resource "aws_lambda_function" "spotify_store_turn" {
   }
 }
 
-resource "aws_lambda_function" "apple_store_turn" {
-  function_name = "apple-store-turn"
+resource "aws_lambda_function" "store_turn_apple" {
+  function_name = "store-turn-apple"
   role          = aws_iam_role.store_turn_role.arn
   package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.apple_st_ecr.repository_url}:latest"
+  image_uri     = "${aws_ecr_repository.store_turn_apple_ecr.repository_url}:latest"
   timeout       = 480
   memory_size   = 2048
 
@@ -52,13 +52,13 @@ resource "aws_lambda_function" "apple_store_turn" {
 # Data source to get the latest image digest from ECR
 
 
-resource "aws_lambda_function" "invoke_store_turn" {
-  function_name    = "invoke-store-turn"
-  role             = aws_iam_role.invoke_store_turn_role.arn
+resource "aws_lambda_function" "store_turn_invoke" {
+  function_name    = "store-turn-invoke"
+  role             = aws_iam_role.store_turn_invoke_role.arn
   handler          = "main.lambda_handler"
   runtime          = "python3.10"
-  filename         = data.archive_file.lambda_invoke_store_turn.output_path
-  source_code_hash = data.archive_file.lambda_invoke_store_turn.output_base64sha256
+  filename         = data.archive_file.store_turn_lambda_invoke.output_path
+  source_code_hash = data.archive_file.store_turn_lambda_invoke.output_base64sha256
   timeout          = 200
 }
 

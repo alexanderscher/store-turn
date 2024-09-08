@@ -1,17 +1,17 @@
-resource "aws_scheduler_schedule" "invoke_spotify_store_turn_schedule" {
-  name       = "invoke-spotify-store-turn-schedule"
-  group_name = "default"
+# resource "aws_scheduler_schedule" "store_turn_invoke_schedule" {
+#   name       = "store-turn-invoke-schedule"
+#   group_name = "default"
 
-  flexible_time_window {
-    mode = "OFF"
-  }
+#   flexible_time_window {
+#     mode = "OFF"
+#   }
 
-  schedule_expression          = "cron(45 14 8 9 ? 2024)"
-  schedule_expression_timezone = "America/Los_Angeles"
-  # cron(mins hour day month ? year)
-  # cron(05 21 7 9 ? 2024)
-  target {
-    arn      = aws_lambda_function.invoke_store_turn.arn
-    role_arn = aws_iam_role.scheduler_role.arn
-  }
-}
+#   schedule_expression          = "cron(45 14 8 9 ? 2024)"
+#   schedule_expression_timezone = "America/Los_Angeles"
+#   # cron(mins hour day month ? year)
+#   # cron(05 21 7 9 ? 2024)
+#   target {
+#     arn      = aws_lambda_function.store_turn_invoke.arn
+#     role_arn = aws_iam_role.store_turn_scheduler_role.arn
+#   }
+# }

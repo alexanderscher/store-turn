@@ -1,9 +1,6 @@
 name: Deploy Lambda and Terraform
 
-on:
-  push:
-    branches:
-      - main
+on: workflow_dispatch
 
 jobs:
   deploy:
