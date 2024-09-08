@@ -23,10 +23,10 @@ jobs:
       # Step 3: Cleanup old ECR images before building new one
       - name: Cleanup ECR Images
         run: |
-          IMAGES=$(aws ecr list-images --repository-name apple-st-ecr --query 'imageIds[*]' --output json)
+          IMAGES=$(aws ecr list-images --repository-name store-turn-apple-ecr --query 'imageIds[*]' --output json)
           if [ "$IMAGES" != "[]" ]; then
             aws ecr batch-delete-image \
-              --repository-name apple-st-ecr \
+              --repository-name store-turn-apple-ecr \
               --image-ids "$IMAGES"
           else
             echo "No images to delete."
@@ -44,14 +44,14 @@ jobs:
       # Step 6: Build and Push the Docker image to ECR
       - name: Build and Push Docker Image to ECR
         run: |
-          docker buildx build --platform linux/amd64 -t 742736545134.dkr.ecr.us-east-1.amazonaws.com/apple-st-ecr:latest --push --provenance=false .
+          docker buildx build --platform linux/amd64 -t 742736545134.dkr.ecr.us-east-1.amazonaws.com/store-turn-apple-ecr:latest --push --provenance=false .
 
       # Step 7: Update the Lambda function with the new image
       - name: Update Lambda Function with New Image
         run: |
           aws lambda update-function-code \
             --function-name apple-store-turn \
-            --image-uri 742736545134.dkr.ecr.us-east-1.amazonaws.com/apple-st-ecr:latest
+            --image-uri 742736545134.dkr.ecr.us-east-1.amazonaws.com/store-turn-apple-ecr:latest
 
       # Step 8: Install Terraform
       - name: Install Terraform
