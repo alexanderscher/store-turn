@@ -50,7 +50,7 @@ jobs:
       # Step 6: Build and Push the Docker image to ECR
       - name: Build and Push Docker Image to ECR
         run: |
-          docker buildx build --platform linux/amd64 -t 742736545134.dkr.ecr.us-east-1.amazonaws.com/store-turn-apple-ecr:latest --push --provenance=false ../../apple
+          docker buildx build --platform linux/amd64 -t 742736545134.dkr.ecr.us-east-1.amazonaws.com/store-turn-apple-ecr:latest --push --provenance=false ./apple
 
       # Step 7: Update the Lambda function with the new image
       - name: Update Lambda Function with New Image
