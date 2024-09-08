@@ -1,13 +1,13 @@
 data "archive_file" "lambda" {
   type        = "zip"
-  source_dir  = "${path.module}/../spotify"
-  output_path = "${path.module}/../zip/spotify_lambda.zip"
+  source_dir  = "${path.module}/../../spotify"
+  output_path = "${path.module}/../../zip/spotify_lambda.zip"
 }
 
 data "archive_file" "store_turn_lambda_invoke" {
   type        = "zip"
-  source_file = "${path.module}/../run/main.py"
-  output_path = "${path.module}/../zip/invoke_lambda.zip"
+  source_file = "${path.module}/../../run/main.py"
+  output_path = "${path.module}/../../zip/invoke_lambda.zip"
 }
 
 resource "aws_lambda_function" "store_turn_spotify" {
