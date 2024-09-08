@@ -402,8 +402,8 @@ APPLE_PRIVATE_KEY = (
 
 class StoreTurn:
 
-    def __init__(self, tracks, driver):
-        self.tracks = tracks
+    def __init__(self, artist, driver):
+        self.artist = artist
         self.driver = driver
         self.apple_music_client = AppleMusicAPI(
             APPLE_PRIVATE_KEY, APPLE_KEY_ID, APPLE_TEAM_ID, self.driver
@@ -412,20 +412,20 @@ class StoreTurn:
     def find_artist(self):
 
         res = {}
-        for track in self.tracks["tracks"]:
-            print("\n" + track["artist"]["s"] + "\n")
 
-            print(f"\nApple Music:")
+        print("\n" + self.artist["artist"] + "\n")
 
-            self.apple_music_client.nmd_a(track["artist"]["am"])
-            self.apple_music_client.check_song(track["artist"]["am"])
-            self.apple_music_client.check_album(track["artist"]["am"])
-            for genre in track["genres"]["am"]:
-                self.apple_music_client.scrape(genre)
-                time.sleep(5)
-                self.apple_music_client.search_artist(track["artist"]["am"])
+        print(f"\nApple Music:")
 
-            res[track["artist"]["s"]] = self.apple_music_client.res
+        self.apple_music_client.nmd_a(self.artist["artist"])
+        self.apple_music_client.check_song(self.artist["artist"])
+        self.apple_music_client.check_album(self.artist["artist"])
+        for genre in self.artist["genres"]["am"]:
+            self.apple_music_client.scrape(genre)
+            time.sleep(5)
+            self.apple_music_client.search_artist(self.artist["artist"]["am"])
+
+        res[self.artist["artist"]] = self.apple_music_client.res
         return res
 
 
@@ -466,18 +466,6 @@ def send_email(subject, body, recipient):
 
 
 def lambda_handler(event, context):
-    artists = {
-        "tracks": [
-            {
-                "artist": {"s": "Dave Blunts", "am": "Dave Blunts"},
-                "country": ["US"],
-                "genres": {
-                    "am": ["993297962"],
-                },
-            }
-        ]
-    }
-
     options = webdriver.ChromeOptions()
 
     options.binary_location = "/opt/chrome/chrome"
@@ -503,7 +491,7 @@ def lambda_handler(event, context):
 
     driver: WebDriver = webdriver.Chrome(service=service, options=options)
 
-    store_turn_artist = StoreTurn(artists, driver)
+    store_turn_artist = StoreTurn(event, driver)
     res = store_turn_artist.find_artist()
 
     print(res)

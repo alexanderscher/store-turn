@@ -29,6 +29,26 @@ resource "aws_lambda_function" "spotify_store_turn" {
   }
 }
 
+resource "aws_lambda_function" "apple_store_turn" {
+  function_name = "apple-store-turn"
+  role          = aws_iam_role.store_turn_role.arn
+  package_type  = "Image"
+  image_uri     = "${aws_ecr_repository.apple_st_ecr.repository_url}:latest"
+  timeout       = 480
+  memory_size   = 2048
+
+  environment {
+    variables = {
+      APPLE_TEAM_ID         = var.apple_team_id
+      APPLE_KEY_ID          = var.apple_key_id
+      APPLE_PRIVATE_KEY     = var.apple_private_key
+      aws_access_key_id     = var.aws_access_key_id
+      aws_secret_access_key = var.aws_secret_access_key
+    }
+  }
+}
+
+
 resource "aws_lambda_function" "invoke_spotify_store_turn" {
   function_name    = "invoke-spotify-store-turn"
   role             = aws_iam_role.invoke_spotify_store_turn_role.arn

@@ -185,7 +185,7 @@ class StoreTurn:
         self.spotify_client = SpotifyAPI(client_id, client_secret)
 
     def find_artist(self):
-        artist = self.artist["artist"]["s"]
+        artist = self.artist["artist"]
         playlist = {artist: []}
 
         for genre in self.artist["genres"]["s"]:
@@ -194,7 +194,7 @@ class StoreTurn:
             print(f"Searching playlists in {genre}")
             try:
                 res = self.spotify_client.find_artist_in_playlists(
-                    self.artist["artist"]["s"]
+                    self.artist["artist"]
                 )
                 if not res:
                     print("None")
@@ -250,7 +250,7 @@ def send_email(subject, body, recipient):
 
 
 def lambda_handler(event, context):
-    artist_name = event["artist"]["s"]
+    artist_name = event["artist"]
     body = ""
 
     print(f"Starting search for {artist_name}")

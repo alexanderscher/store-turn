@@ -1,6 +1,6 @@
-# IAM Role for spotify-store-turn Lambda
-resource "aws_iam_role" "spotify_store_turn_role" {
-  name = "spotify-store-turn-role"
+# IAM Role for store-turn Lambda
+resource "aws_iam_role" "store_turn_role" {
+  name = "store-turn-role"
 
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -14,10 +14,10 @@ resource "aws_iam_role" "spotify_store_turn_role" {
   })
 }
 
-# Policy for spotify-store-turn Lambda to send emails and create logs
-resource "aws_iam_role_policy" "spotify_store_turn_policy" {
-  name = "spotify-store-turn-policy"
-  role = aws_iam_role.spotify_store_turn_role.id
+# Policy for store-turn Lambda to send emails and create logs
+resource "aws_iam_role_policy" "store_turn_policy" {
+  name = "store-turn-policy"
+  role = aws_iam_role.store_turn_role.id
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -40,9 +40,9 @@ resource "aws_iam_role_policy" "spotify_store_turn_policy" {
   })
 }
 
-# IAM Role for invoke-spotify-store-turn Lambda
-resource "aws_iam_role" "invoke_spotify_store_turn_role" {
-  name = "invoke-spotify-store-turn-role"
+# IAM Role for invoke-store-turn Lambda
+resource "aws_iam_role" "invoke_store_turn_role" {
+  name = "invoke-store-turn-role"
 
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -56,10 +56,10 @@ resource "aws_iam_role" "invoke_spotify_store_turn_role" {
   })
 }
 
-# Policy for invoke-spotify-store-turn Lambda to invoke other Lambda functions
-resource "aws_iam_role_policy" "invoke_spotify_store_turn_policy" {
-  name = "invoke-spotify-store-turn-policy"
-  role = aws_iam_role.invoke_spotify_store_turn_role.id
+# Policy for invoke-store-turn Lambda to invoke other Lambda functions
+resource "aws_iam_role_policy" "invoke_store_turn_policy" {
+  name = "invoke-store-turn-policy"
+  role = aws_iam_role.invoke_store_turn_role.id
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -99,7 +99,7 @@ resource "aws_iam_role_policy" "scheduler_invoke_policy" {
     Statement = [{
       Effect   = "Allow",
       Action   = "lambda:InvokeFunction",
-      Resource = aws_lambda_function.invoke_spotify_store_turn.arn
+      Resource = aws_lambda_function.invoke_store_turn.arn
     }]
   })
 }
