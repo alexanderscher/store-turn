@@ -18,5 +18,8 @@ RUN chmod 755 /var/task/main.py
 
 CMD [ "main.lambda_handler" ]
 
+# aws ecr batch-delete-image \
+#     --repository-name apple-st-ecr \
+#     --image-ids "$(aws ecr list-images --repository-name apple-st-ecr --query 'imageIds[*]' --output json)"
 
 # docker buildx build --platform linux/amd64 -t 742736545134.dkr.ecr.us-east-1.amazonaws.com/apple-st-ecr:latest --push --provenance=false .

@@ -46,7 +46,10 @@ resource "aws_lambda_function" "apple_store_turn" {
       aws_secret_access_key = var.aws_secret_access_key
     }
   }
+
 }
+
+# Data source to get the latest image digest from ECR
 
 
 resource "aws_lambda_function" "invoke_store_turn" {

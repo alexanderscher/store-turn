@@ -261,12 +261,8 @@ class AppleMusicAPI:
                             in track["attributes"]["artistName"].lower()
                         ):
                             print(
-                                "- ",
-                                track["attributes"]["name"],
-                                ": ",
+                                "found",
                                 pl_name,
-                                "|",
-                                f"{i + 1}/{len(pl_tracks)}",
                             )
                             self.res.append(
                                 (
@@ -292,9 +288,7 @@ class AppleMusicAPI:
             a = song.find_element(By.XPATH, ".//div[3]").text
 
             if track_artist.lower() in a.lower():
-                print(
-                    "- ", t, ": New Music Daily", "|", f"{str(i + 1)}/{str(len(row))}"
-                )
+                print("found nmd")
                 self.res.append((t, "New Music Daily", f"{str(i + 1)}/{str(len(row))}"))
 
     def apple_songs(self, url: str, roster: str, chart: str):
@@ -307,7 +301,7 @@ class AppleMusicAPI:
             t = song.find_element(By.XPATH, ".//div[2]").text
             a = song.find_element(By.XPATH, ".//div[3]").text
             if roster.lower() in a.lower():
-                print(f" - {t} :", chart, "|", f"{str(i + 1)}/{str(len(row))}")
+                print("found", chart)
                 self.res.append((t, chart, f"{str(i + 1)}/{str(len(row))}"))
 
     def apple_albums(self, url: str, roster: str, chart: str):
@@ -325,7 +319,7 @@ class AppleMusicAPI:
                 artist = n.find_element(By.XPATH, ".//div/div[2]/div/p/div/span/a").text
                 album = n.find_element(By.CLASS_NAME, "product-lockup__title-link").text
                 if roster.lower() in artist.lower():
-                    print(f" - {album} :", chart, "|", f"{str(i + 1)}/{str(len(row))}")
+                    print("found", chart)
                     self.res.append((album, chart, f"{str(i + 1)}/{str(len(row))}"))
             except NoSuchElementException:
                 pass
@@ -417,10 +411,11 @@ class StoreTurn:
 
         print(f"\nApple Music:")
 
-        self.apple_music_client.nmd_a(self.artist["artist"])
-        self.apple_music_client.check_song(self.artist["artist"])
-        self.apple_music_client.check_album(self.artist["artist"])
+        # self.apple_music_client.nmd_a(self.artist["artist"])
+        # self.apple_music_client.check_song(self.artist["artist"])
+        # self.apple_music_client.check_album(self.artist["artist"])
         for genre in self.artist["genres"]["am"]:
+            print(f"Checking {genre}")
             self.apple_music_client.scrape(genre)
             time.sleep(5)
             self.apple_music_client.search_artist(self.artist["artist"])
