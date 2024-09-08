@@ -1,6 +1,9 @@
 name: Deploy Store Turn
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
