@@ -3,7 +3,6 @@ variable "region" {
   default     = "us-east-1"
 }
 
-
 variable "spotify_client_id" {
   type = string
 }
