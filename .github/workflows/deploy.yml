@@ -56,7 +56,7 @@ jobs:
       - name: Update Lambda Function with New Image
         run: |
           aws lambda update-function-code \
-            --function-name apple-store-turn \
+            --function-name store-turn-apple \
             --image-uri 742736545134.dkr.ecr.us-east-1.amazonaws.com/store-turn-apple-ecr:latest
 
       # Step 8: Install Terraform
