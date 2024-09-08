@@ -16,6 +16,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException
 
+APPLE_TEAM_ID = os.getenv("APPLE_TEAM_ID")
+APPLE_KEY_ID = os.getenv("APPLE_KEY_ID")
+APPLE_PRIVATE_KEY = os.getenv("APPLE_PRIVATE_KEY")
+
+if not APPLE_TEAM_ID or not APPLE_KEY_ID or not APPLE_PRIVATE_KEY:
+    raise ValueError("Missing required environment variables for Apple Music API")
+
+APPLE_PRIVATE_KEY = (
+    f"-----BEGIN PRIVATE KEY-----\n{APPLE_PRIVATE_KEY}\n-----END PRIVATE KEY-----"
+)
+
 
 class AppleMusicAPI:
     """
@@ -150,51 +161,6 @@ class AppleMusicAPI:
                 else:
                     raise
 
-    def get_genre(self, genre: str) -> None:
-        self.driver.get("https://music.apple.com/us/search")
-        time.sleep(2)
-        genres = self.driver.find_elements(By.CLASS_NAME, "grid-item")
-        print("https://music.apple.com/us/search")
-        for g in genres:
-            if g.text == genre:
-                g.click()
-                print(f"clicked {genre}")
-                break
-
-    # def get_room(self, genre):
-    #     self.get_genre(genre)
-    #     print(f"getting room for {genre}")
-    #     if genre == "Chill":
-    #         time.sleep(10)
-    #         if not self.driver.current_url.__contains__(
-    #             "https://music.apple.com/us/curator/"
-    #         ):
-    #             MyException = "You are not on a genre page!"
-    #             raise MyException("You are not on a genre page!")
-    #         else:
-    #             options = self.driver.find_elements(By.CLASS_NAME, "title__button")
-    #             # time.sleep(2)
-    #             for o in options:
-    #                 if o.text == "Study Time":
-    #                     #         # o.find_element(By.CLASS_NAME, "see-all").click()
-    #                     o.click()
-
-    #     else:
-    #         time.sleep(10)
-    #         if not self.driver.current_url.__contains__(
-    #             "https://music.apple.com/us/curator/"
-    #         ):
-    #             MyException = "You are not on a genre page!"
-    #             raise MyException("You are not on a genre page!")
-    #         else:
-    #             print(self.driver.current_url)
-    #             options = self.driver.find_elements(By.CLASS_NAME, "title__button")
-    #             time.sleep(5)
-    #             for o in options:
-    #                 if o.text == "Playlists" or o.text == "Popular Playlists":
-    #                     o.click()
-    #                     print("clicked playlists")
-
     def get_playlist_ids(self, genre):
         self.driver.get(f"https://music.apple.com/us/room/{genre}")
 
@@ -240,7 +206,6 @@ class AppleMusicAPI:
             self.get_playlist_ids(genre)
         except Exception as e:
             print("Something went wrong.")
-            # print(e)
             raise
 
     def search_artist(self, track_artist: str):
@@ -261,7 +226,7 @@ class AppleMusicAPI:
                             in track["attributes"]["artistName"].lower()
                         ):
                             print(
-                                "found",
+                                "found in playlist:",
                                 pl_name,
                             )
                             self.res.append(
@@ -275,21 +240,30 @@ class AppleMusicAPI:
                     except KeyError:
                         pass
 
-    def nmd_a(self, track_artist: str):
-        self.driver.get(
-            "https://music.apple.com/us/playlist/new-music-daily/pl.2b0e6e332fdf4b7a91164da3162127b5"
+    def new_music_daily(self, track_artist):
+
+        pl_info = self._get(
+            f"https://api.music.apple.com/v1/catalog/us/playlists/pl.2b0e6e332fdf4b7a91164da3162127b5"
         )
-        print("checking nmd")
-        time.sleep(10)
-        row = self.driver.find_elements(By.CLASS_NAME, "songs-list-row")
+        pl_name = pl_info["data"][0]["attributes"]["name"]
+        pl_tracks = pl_info["data"][0]["relationships"]["tracks"]["data"]
+        for i, track in enumerate(pl_tracks):
+            try:
+                if track_artist.lower() in track["attributes"]["artistName"].lower():
+                    print(
+                        "found in playlist:",
+                        pl_name,
+                    )
+                    self.res.append(
+                        (
+                            track["attributes"]["name"],
+                            pl_name,
+                            f"{i + 1}/{len(pl_tracks)}",
+                        )
+                    )
 
-        for i, song in enumerate(row):
-            t = song.find_element(By.XPATH, ".//div[2]").text
-            a = song.find_element(By.XPATH, ".//div[3]").text
-
-            if track_artist.lower() in a.lower():
-                print("found nmd")
-                self.res.append((t, "New Music Daily", f"{str(i + 1)}/{str(len(row))}"))
+            except KeyError:
+                pass
 
     def apple_songs(self, url: str, roster: str, chart: str):
         self.driver.get(url)
@@ -301,7 +275,7 @@ class AppleMusicAPI:
             t = song.find_element(By.XPATH, ".//div[2]").text
             a = song.find_element(By.XPATH, ".//div[3]").text
             if roster.lower() in a.lower():
-                print("found", chart)
+                print("found in playlist:", chart)
                 self.res.append((t, chart, f"{str(i + 1)}/{str(len(row))}"))
 
     def apple_albums(self, url: str, roster: str, chart: str):
@@ -319,79 +293,67 @@ class AppleMusicAPI:
                 artist = n.find_element(By.XPATH, ".//div/div[2]/div/p/div/span/a").text
                 album = n.find_element(By.CLASS_NAME, "product-lockup__title-link").text
                 if roster.lower() in artist.lower():
-                    print("found", chart)
+                    print("found in playlist:", chart)
                     self.res.append((album, chart, f"{str(i + 1)}/{str(len(row))}"))
             except NoSuchElementException:
                 pass
 
-    def check_album(self, artist):
-
+    def all(self, artist):
         self.apple_albums(
             "https://music.apple.com/us/room/976405703",
             artist,
             "New Music All Genres - Albums",
         )
-
-        self.apple_albums(
-            "https://music.apple.com/us/room/993298537",
-            artist,
-            "New Release Pop - Albums",
-        )
-
-        self.apple_albums(
-            "https://music.apple.com/us/room/1532319379",
-            artist,
-            "New Release Hip Hop - Albums",
-        )
-
-        self.apple_albums(
-            "https://music.apple.com/us/room/993298342",
-            artist,
-            "New Release R&B - Albums",
-        )
-
-    def check_song(self, artist):
-
         self.apple_songs(
             "https://music.apple.com/us/room/1457265758",
             artist,
             "Best New Songs All Genres",
         )
         self.apple_songs(
-            "https://music.apple.com/us/room/6451822724",
-            artist,
-            "Emerging R&B Songs",
+            "https://music.apple.com/us/room/6670727724", artist, "Latest Songs"
         )
-
         self.apple_songs(
-            "https://music.apple.com/us/room/1013646917",
-            artist,
-            "Hot Track R&B",
+            "https://music.apple.com/us/room/1533338568", artist, "Up Next Hot Tracks"
         )
 
+    def hihop(self, artist):
+        self.apple_albums(
+            "https://music.apple.com/us/room/1532319379",
+            artist,
+            "New Release Hip Hop - Albums",
+        )
         self.apple_songs(
             "https://music.apple.com/us/room/993297955",
             artist,
             "Best New Songs Hip Hop",
         )
 
+    def pop(self, artist):
+        self.apple_albums(
+            "https://music.apple.com/us/room/993298537",
+            artist,
+            "New Release Pop - Albums",
+        )
         self.apple_songs(
             "https://music.apple.com/us/room/993298549",
             artist,
             "Best New Songs Pop",
         )
 
-
-APPLE_TEAM_ID = os.getenv("APPLE_TEAM_ID")
-APPLE_KEY_ID = os.getenv("APPLE_KEY_ID")
-APPLE_PRIVATE_KEY = os.getenv("APPLE_PRIVATE_KEY")
-
-if not APPLE_TEAM_ID or not APPLE_KEY_ID or not APPLE_PRIVATE_KEY:
-    raise ValueError("Missing required environment variables for Apple Music API")
-
-APPLE_PRIVATE_KEY = (
-    f"-----BEGIN PRIVATE KEY-----\n{APPLE_PRIVATE_KEY}\n-----END PRIVATE KEY-----"
-)
+    def rb(self, artist):
+        self.apple_albums(
+            "https://music.apple.com/us/room/993298342",
+            artist,
+            "New Release R&B - Albums",
+        )
+        self.apple_songs(
+            "https://music.apple.com/us/room/6451822724",
+            artist,
+            "Emerging R&B Songs",
+        )
+        self.apple_songs(
+            "https://music.apple.com/us/room/6657994054", artist, "Best New Songs R&B"
+        )
 
 
 class StoreTurn:
@@ -411,11 +373,23 @@ class StoreTurn:
 
         print(f"\nApple Music:")
 
-        # self.apple_music_client.nmd_a(self.artist["artist"])
-        # self.apple_music_client.check_song(self.artist["artist"])
-        # self.apple_music_client.check_album(self.artist["artist"])
-        for genre in self.artist["genres"]["am"]:
+        self.apple_music_client.new_music_daily(self.artist["artist"])
+        self.apple_music_client.all(self.artist["artist"])
+        genres = self.artist["genres"]["am"]
+
+        for genre in genres:
             print(f"Checking {genre}")
+            if genre == "993297962":
+                print("checking hiphop scrape")
+                self.apple_music_client.hihop(self.artist["artist"])
+            if genre == "976439548":
+                print("checking pop scrape")
+                self.apple_music_client.pop(self.artist["artist"])
+            if genre == "6657994053":
+                print("checking rb scrape")
+                self.apple_music_client.rb(self.artist["artist"])
+
+            time.sleep(5)
             self.apple_music_client.scrape(genre)
             time.sleep(5)
             self.apple_music_client.search_artist(self.artist["artist"])
@@ -467,7 +441,7 @@ def lambda_handler(event, context):
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-gpu")
-    options.add_argument("--window-size=1280x1696")
+    options.add_argument("--window-size=1963x1696")
     options.add_argument("--single-process")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-dev-tools")

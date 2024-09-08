@@ -62,8 +62,3 @@ resource "aws_lambda_function" "invoke_store_turn" {
   timeout          = 200
 }
 
-
-# terraform init
-# terraform validate
-# terraform plan
-# terraform apply

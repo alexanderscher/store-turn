@@ -1,0 +1,77 @@
+name: Deploy Lambda and Terraform
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS Credentials using GitHub Secrets
+      # Make sure you have set these secrets in your GitHub repository settings.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 3: Cleanup old ECR images before building new one
+      - name: Cleanup ECR Images
+        run: |
+          IMAGES=$(aws ecr list-images --repository-name apple-st-ecr --query 'imageIds[*]' --output json)
+          if [ "$IMAGES" != "[]" ]; then
+            aws ecr batch-delete-image \
+              --repository-name apple-st-ecr \
+              --image-ids "$IMAGES"
+          else
+            echo "No images to delete."
+          fi
+
+      # Step 4: Set up Docker Buildx (needed for multi-platform builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 5: Log in to Amazon ECR to push the image
+      - name: Log in to Amazon ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 742736545134.dkr.ecr.us-east-1.amazonaws.com
+
+      # Step 6: Build and Push the Docker image to ECR
+      - name: Build and Push Docker Image to ECR
+        run: |
+          docker buildx build --platform linux/amd64 -t 742736545134.dkr.ecr.us-east-1.amazonaws.com/apple-st-ecr:latest --push --provenance=false .
+
+      # Step 7: Update the Lambda function with the new image
+      - name: Update Lambda Function with New Image
+        run: |
+          aws lambda update-function-code \
+            --function-name apple-store-turn \
+            --image-uri 742736545134.dkr.ecr.us-east-1.amazonaws.com/apple-st-ecr:latest
+
+      # Step 8: Install Terraform
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      # Step 9: Initialize Terraform
+      - name: Initialize Terraform
+        run: terraform init
+
+      # Step 10: Validate Terraform configuration
+      - name: Validate Terraform
+        run: terraform validate
+
+      # Step 11: Plan Terraform changes
+      - name: Plan Terraform Changes
+        run: terraform plan
+
+      # Step 12: Apply Terraform changes
+      - name: Apply Terraform Changes
+        run: terraform apply -auto-approve

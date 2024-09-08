@@ -21,20 +21,19 @@ def lambda_handler(event, context):
                 "artist": "Dave Blunts",
                 "genres": {
                     "s": ["0JQ5DAqbMKFQ00XGBls6ym"],
-                    "am": ["993297962"],
+                    "am": ["1533338569", "993297962"],
                 },
             },
             {
-                "artist": "Cochise",
+                "artist": "Cash Cobain",
                 "genres": {
                     "s": ["0JQ5DAqbMKFQ00XGBls6ym"],
-                    "am": ["993297962"],
+                    "am": ["1533338569", "993297962", "6657994053"],
                 },
             },
         ]
     }
     lambda_functions = ["spotify-store-turn", "apple-store-turn"]
-
     for p in artists_payload["tracks"]:
         for function_name in lambda_functions:
             print(f"Invoking {function_name} for {p}")

@@ -33,3 +33,5 @@ terraform/.terraform/providers/
 *.zip
 *.tar.gz
 *.bin
+
+commands.txt
