@@ -12,7 +12,7 @@ data "archive_file" "lambda_invoke_store_turn" {
 
 resource "aws_lambda_function" "spotify_store_turn" {
   function_name    = "spotify-store-turn"
-  role             = aws_iam_role.spotify_store_turn_role.arn
+  role             = aws_iam_role.store_turn_role.arn
   handler          = "main.lambda_handler"
   runtime          = "python3.10"
   filename         = data.archive_file.lambda.output_path
@@ -49,9 +49,9 @@ resource "aws_lambda_function" "apple_store_turn" {
 }
 
 
-resource "aws_lambda_function" "invoke_spotify_store_turn" {
-  function_name    = "invoke-spotify-store-turn"
-  role             = aws_iam_role.invoke_spotify_store_turn_role.arn
+resource "aws_lambda_function" "invoke_store_turn" {
+  function_name    = "invoke-store-turn"
+  role             = aws_iam_role.invoke_store_turn_role.arn
   handler          = "main.lambda_handler"
   runtime          = "python3.10"
   filename         = data.archive_file.lambda_invoke_store_turn.output_path

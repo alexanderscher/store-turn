@@ -75,7 +75,7 @@ resource "aws_iam_role_policy" "invoke_store_turn_policy" {
 
 # IAM role for the scheduler to invoke Lambda
 resource "aws_iam_role" "scheduler_role" {
-  name = "scheduler-invoke-lambda-role"
+  name = "scheduler-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -90,8 +90,8 @@ resource "aws_iam_role" "scheduler_role" {
 }
 # IAM policy for the scheduler role to invoke the Lambda function
 
-resource "aws_iam_role_policy" "scheduler_invoke_policy" {
-  name = "scheduler-invoke-policy"
+resource "aws_iam_role_policy" "scheduler_policy" {
+  name = "scheduler-policy"
   role = aws_iam_role.scheduler_role.id
 
   policy = jsonencode({

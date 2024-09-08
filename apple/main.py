@@ -423,7 +423,7 @@ class StoreTurn:
         for genre in self.artist["genres"]["am"]:
             self.apple_music_client.scrape(genre)
             time.sleep(5)
-            self.apple_music_client.search_artist(self.artist["artist"]["am"])
+            self.apple_music_client.search_artist(self.artist["artist"])
 
         res[self.artist["artist"]] = self.apple_music_client.res
         return res
@@ -490,7 +490,7 @@ def lambda_handler(event, context):
     # service = Service(ChromeDriverManager().install())
 
     driver: WebDriver = webdriver.Chrome(service=service, options=options)
-
+    print(event)
     store_turn_artist = StoreTurn(event, driver)
     res = store_turn_artist.find_artist()
 

@@ -5,7 +5,7 @@ lambda_client = boto3.client("lambda")
 
 
 def invoke_lambda_with_artists(artists_payload, function_name):
-    print(f"Invoking {function_name} for {artists_payload['artist']['s']}")
+    print(f"Invoking {function_name} for {artists_payload['artist']}")
     response = lambda_client.invoke(
         FunctionName=function_name,
         InvocationType="Event",
@@ -37,6 +37,7 @@ def lambda_handler(event, context):
 
     for p in artists_payload["tracks"]:
         for function_name in lambda_functions:
+            print(f"Invoking {function_name} for {p}")
             response = invoke_lambda_with_artists(p, function_name)
             print(response)
 
