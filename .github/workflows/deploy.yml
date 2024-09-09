@@ -22,7 +22,6 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::742736545134:role/store-turn-github-action
-          role-session-name: github-action-session
           aws-region: us-east-1
 
       # Step 3: Cleanup old ECR images before building new one
