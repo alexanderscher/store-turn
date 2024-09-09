@@ -24,6 +24,8 @@ jobs:
           role-to-assume: arn:aws:iam::742736545134:role/store-turn-github-action
           aws-region: us-east-1
 
+      - name: Check STS Identity
+        run: aws sts get-caller-identity
       # Step 3: Cleanup old ECR images before building new one
       - name: Cleanup ECR Images
         run: |
