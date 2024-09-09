@@ -10,7 +10,14 @@ from botocore.exceptions import ClientError
 
 
 class SpotifyAPI(object):
-    def __init__(self, client_id, client_secret, *args, **kwargs):
+    def __init__(
+        self,
+        client_id,
+        client_secret,
+        artist_name,
+        *args,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         self.client_id = client_id
         self.client_secret = client_secret
@@ -20,6 +27,7 @@ class SpotifyAPI(object):
         self.token_url = "https://accounts.spotify.com/api/token"
         self.playlists = []  # Instance-level attribute
         self.checked_playlists = []  # Instance-level attribute
+        self.artist_name = artist_name
 
     def get_client_credentials(self):
         client_id = self.client_id
@@ -99,6 +107,7 @@ class SpotifyAPI(object):
                     else:
                         break
                 except requests.exceptions.MissingSchema:
+                    email_error(self.artist_name)
                     break
             self.playlists = playlist_ids_and_names
         except ConnectionError as e:
@@ -111,6 +120,7 @@ class SpotifyAPI(object):
             res = []
             try:
                 if not self.playlists:
+                    email_error(self.artist_name)
                     raise Exception("There are no playlists to search!")
 
                 access_token = self.get_access_token()
@@ -155,6 +165,7 @@ class SpotifyAPI(object):
                                     )
                                 )
                         except (TypeError, KeyError):
+                            email_error(self.artist_name)
                             pass
 
                 return res
@@ -164,6 +175,7 @@ class SpotifyAPI(object):
                 time.sleep(30)
 
             except Exception as e:
+                email_error(self.artist_name)
                 print(f"An unexpected error occurred: {e}")
                 break
 
@@ -182,13 +194,15 @@ if not client_id or not user_id or not client_secret:
 class StoreTurn:
     def __init__(self, artist):
         self.artist = artist
-        self.spotify_client = SpotifyAPI(client_id, client_secret)
+        self.spotify_client = SpotifyAPI(
+            client_id, client_secret, self.artist["artist"]
+        )
 
     def find_artist(self):
         artist = self.artist["artist"]
         playlist = {artist: []}
 
-        for genre in self.artist["genres"]["s"]:
+        for genre in self.artist.get("genres", {}).get("s", []):
             print(f"Getting playlists from {genre}")
             self.spotify_client.get_playlists_from_category(genre, "US")
             print(f"Searching playlists in {genre}")
@@ -208,12 +222,19 @@ class StoreTurn:
                     )
             except Exception as e:
                 print(f"Error finding artist in playlists: {e}")
+                email_error(artist)
                 continue
 
         return playlist
 
 
-def send_email(subject, body, recipient):
+def email_error(artist_name):
+    subject = f"Spotify Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
+    body = f"An error occurred while searching for {artist_name}"
+    send_email(subject, body)
+
+
+def send_email(subject, body):
     ses_client = boto3.client(
         "ses",
         region_name="us-east-1",
@@ -226,7 +247,7 @@ def send_email(subject, body, recipient):
         response = ses_client.send_email(
             Destination={
                 "ToAddresses": [
-                    recipient,
+                    "alexcscher@gmail.com",
                 ],
             },
             Message={
@@ -257,6 +278,14 @@ def lambda_handler(event, context):
     store_turn_artist = StoreTurn(event)
     playlists = store_turn_artist.find_artist()
 
+    artist_playlists = playlists.get(artist_name, [])
+
+    if len(artist_playlists) == 0:
+        body = f"No tracks found for {artist_name}"
+        print(body)
+        send_email(subject, body)
+        return {"statusCode": 200, "body": "No tracks found"}
+
     for a, tracks in playlists.items():
         body += f"\n{a}\n"
         for track_info in tracks:
@@ -267,9 +296,10 @@ def lambda_handler(event, context):
     print("Finished")
     time.sleep(10)
 
-    subject = f"Spotify Store Turn - {datetime.now().strftime('%m/%d/%y')}"
-    recipient = "alexcscher@gmail.com"
+    subject = (
+        f"Spotify Store Turn: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
+    )
     print(body)
-    send_email(subject, body, recipient)
+    send_email(subject, body)
 
     return {"statusCode": 200, "body": "Execution completed successfully"}

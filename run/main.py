@@ -31,6 +31,13 @@ def lambda_handler(event, context):
                     "am": ["1533338569", "993297962", "6657994053"],
                 },
             },
+            {
+                "artist": "lilbubblegum",
+                "genres": {
+                    "s": ["0JQ5DAqbMKFQ00XGBls6ym"],
+                    "am": ["993297962"],
+                },
+            },
         ]
     }
     lambda_functions = ["spotify-store-turn", "apple-store-turn"]

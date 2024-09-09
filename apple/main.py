@@ -39,6 +39,7 @@ class AppleMusicAPI:
         key_id,
         team_id,
         driver,
+        artist,
         proxies=None,
         requests_session=True,
         max_retries=10,
@@ -64,6 +65,7 @@ class AppleMusicAPI:
         self.playlist_ids = None
         self.driver: WebDriver = driver
         self.res = []
+        self.artist = artist
 
     def token_is_valid(self):
         return (
@@ -144,12 +146,14 @@ class AppleMusicAPI:
                 status = e.response.status_code
                 if status == 429 or (500 <= status < 600):
                     if retries < 0:
+                        email_error(self.artist)
                         raise
                     else:
                         print("retrying ..." + str(delay) + " secs")
                         time.sleep(delay + 1)
                         delay += 1
                 else:
+                    email_error(self.artist)
                     raise
             except Exception as e:
                 print("exception", str(e))
@@ -159,6 +163,7 @@ class AppleMusicAPI:
                     time.sleep(delay + 1)
                     delay += 1
                 else:
+                    email_error(self.artist)
                     raise
 
     def get_playlist_ids(self, genre):
@@ -176,6 +181,7 @@ class AppleMusicAPI:
             if not self.driver.current_url.__contains__(
                 "https://music.apple.com/us/room/"
             ):
+                email_error(self.artist)
                 raise Exception("You are not on a room page!")
 
         else:
@@ -205,6 +211,7 @@ class AppleMusicAPI:
         try:
             self.get_playlist_ids(genre)
         except Exception as e:
+            email_error(self.artist)
             print("Something went wrong.")
             raise
 
@@ -266,17 +273,23 @@ class AppleMusicAPI:
                 pass
 
     def apple_songs(self, url: str, roster: str, chart: str):
+
         self.driver.get(url)
         time.sleep(5)
         print("checking", chart)
-        row = self.driver.find_elements(By.CLASS_NAME, "songs-list-row")
 
-        for i, song in enumerate(row):
-            t = song.find_element(By.XPATH, ".//div[2]").text
-            a = song.find_element(By.XPATH, ".//div[3]").text
-            if roster.lower() in a.lower():
-                print("found in playlist:", chart)
-                self.res.append((t, chart, f"{str(i + 1)}/{str(len(row))}"))
+        try:
+            row = self.driver.find_elements(By.CLASS_NAME, "songs-list-row")
+
+            for i, song in enumerate(row):
+                t = song.find_element(By.XPATH, ".//div[2]").text
+                a = song.find_element(By.XPATH, ".//div[3]").text
+                if roster.lower() in a.lower():
+                    print("found in playlist:", chart)
+                    self.res.append((t, chart, f"{str(i + 1)}/{str(len(row))}"))
+        except NoSuchElementException:
+            email_error(roster)
+            raise Exception("No songs found")
 
     def apple_albums(self, url: str, roster: str, chart: str):
         self.driver.get(url)
@@ -299,11 +312,6 @@ class AppleMusicAPI:
                 pass
 
     def all(self, artist):
-        self.apple_albums(
-            "https://music.apple.com/us/room/976405703",
-            artist,
-            "New Music All Genres - Albums",
-        )
         self.apple_songs(
             "https://music.apple.com/us/room/1457265758",
             artist,
@@ -314,6 +322,11 @@ class AppleMusicAPI:
         )
         self.apple_songs(
             "https://music.apple.com/us/room/1533338568", artist, "Up Next Hot Tracks"
+        )
+        self.apple_albums(
+            "https://music.apple.com/us/room/976405703",
+            artist,
+            "New Music All Genres - Albums",
         )
 
     def hihop(self, artist):
@@ -362,7 +375,7 @@ class StoreTurn:
         self.artist = artist
         self.driver = driver
         self.apple_music_client = AppleMusicAPI(
-            APPLE_PRIVATE_KEY, APPLE_KEY_ID, APPLE_TEAM_ID, self.driver
+            APPLE_PRIVATE_KEY, APPLE_KEY_ID, APPLE_TEAM_ID, self.driver, self.artist
         )
 
     def find_artist(self):
@@ -398,7 +411,15 @@ class StoreTurn:
         return res
 
 
-def send_email(subject, body, recipient):
+def email_error(artist_name):
+    subject = (
+        f"Aooke Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
+    )
+    body = f"An error occurred while searching for {artist_name}"
+    send_email(subject, body)
+
+
+def send_email(subject, body):
     ses_client = boto3.client(
         "ses",
         region_name="us-east-1",
@@ -411,7 +432,7 @@ def send_email(subject, body, recipient):
         response = ses_client.send_email(
             Destination={
                 "ToAddresses": [
-                    recipient,
+                    "alexcscher@gmail.com",
                 ],
             },
             Message={
@@ -455,15 +476,24 @@ def lambda_handler(event, context):
     # local
     # from selenium.webdriver.chrome.service import Service
     # from webdriver_manager.chrome import ChromeDriverManager
-
     # service = Service(ChromeDriverManager().install())
 
     driver: WebDriver = webdriver.Chrome(service=service, options=options)
     print(event)
     store_turn_artist = StoreTurn(event, driver)
     res = store_turn_artist.find_artist()
-
+    artist_name = event["artist"]
     print(res)
+
+    artist_tracks = res.get("artist", [])
+    if len(artist_tracks) == 0:
+        body = f"No tracks found for {artist_name}"
+        subject = (
+            f"Apple Store Turn: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
+        )
+        print(body)
+        send_email(subject, body)
+        return {"statusCode": 200, "body": "No tracks found"}
 
     body = ""
 
@@ -474,8 +504,7 @@ def lambda_handler(event, context):
             body += f" - {track}: {playlist_name} | {position}\n"
 
     subject = f"Apple Store Turn - {datetime.now().strftime('%m/%d/%y')}"
-    recipient = "alexcscher@gmail.com"
     print(body)
-    send_email(subject, body, recipient)
+    send_email(subject, body)
     driver.quit()
     return {"statusCode": 200, "body": "Execution completed successfully"}
