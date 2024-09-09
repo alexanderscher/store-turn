@@ -81,8 +81,6 @@ jobs:
             -var "apple_team_id=${{ secrets.APPLE_TEAM_ID }}" \
             -var "apple_key_id=${{ secrets.APPLE_KEY_ID }}" \
             -var "apple_private_key=${{ secrets.APPLE_PRIVATE_KEY }}" \
-            -var "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" \
-            -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             -var "spotify_client_id=${{ secrets.SPOTIFY_CLIENT_ID }}" \
             -var "spotify_client_secret=${{ secrets.SPOTIFY_CLIENT_SECRET }}" \
             -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}"
@@ -98,8 +96,6 @@ jobs:
           -var "apple_team_id=${{ secrets.APPLE_TEAM_ID }}" \
           -var "apple_key_id=${{ secrets.APPLE_KEY_ID }}" \
           -var "apple_private_key=${{ secrets.APPLE_PRIVATE_KEY }}" \
-          -var "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" \
-          -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
           -var "spotify_client_id=${{ secrets.SPOTIFY_CLIENT_ID }}" \
           -var "spotify_client_secret=${{ secrets.SPOTIFY_CLIENT_SECRET }}" \
           -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}"
