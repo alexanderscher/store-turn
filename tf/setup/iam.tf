@@ -67,6 +67,20 @@ resource "aws_iam_role_policy" "store_turn_invoke_policy" {
         "Effect" : "Allow",
         "Action" : "lambda:InvokeFunction",
         "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : "ses:SendEmail",
+        "Resource" : "arn:aws:ses:us-east-1:742736545134:identity/*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource" : "*"
       }
     ]
   })

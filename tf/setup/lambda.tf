@@ -21,11 +21,11 @@ resource "aws_lambda_function" "store_turn_spotify" {
   timeout          = 480
   environment {
     variables = {
-      SPOTIFY_CLIENT_ID_L2TK     = var.spotify_client_id
-      SPOTIFY_CLIENT_SECRET_L2TK = var.spotify_client_secret
-      SPOTIFY_USER_ID_L2TK       = var.spotify_user_id
-      aws_access_key_id          = var.aws_access_key_id
-      aws_secret_access_key      = var.aws_secret_access_key
+      SPOTIFY_CLIENT_ID     = var.spotify_client_id
+      SPOTIFY_CLIENT_SECRET = var.spotify_client_secret
+      SPOTIFY_USER_ID       = var.spotify_user_id
+      aws_access_key_id     = var.aws_access_key_id
+      aws_secret_access_key = var.aws_secret_access_key
     }
   }
 }
