@@ -1,5 +1,4 @@
 name: Deploy Store Turn
-
 on:
   push:
     branches:
