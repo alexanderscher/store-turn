@@ -73,9 +73,6 @@ jobs:
 
       # Step 11: Plan Terraform changes
       - name: Terraform Plan
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           terraform plan \
             -var "apple_team_id=${{ secrets.APPLE_TEAM_ID }}" \
@@ -88,9 +85,6 @@ jobs:
 
       # Step 12: Apply Terraform changes
       - name: Apply Terraform Changes
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           terraform apply -auto-approve \
           -var "apple_team_id=${{ secrets.APPLE_TEAM_ID }}" \
