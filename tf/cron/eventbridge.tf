@@ -8,7 +8,7 @@ resource "aws_scheduler_schedule" "store_turn_invoke_schedule_1" {
     mode = "OFF"
   }
 
-  schedule_expression          = "  cron(03 21 9 9 ? 2024)"
+  schedule_expression          = "cron(03 21 9 9 ? 2024)"
   schedule_expression_timezone = "America/Los_Angeles"
 
   target {
@@ -25,7 +25,7 @@ resource "aws_scheduler_schedule" "store_turn_invoke_schedule_2" {
     mode = "OFF"
   }
 
-  schedule_expression          = "  cron(10 21 9 9 ? 2024)"
+  schedule_expression          = "cron(10 21 9 9 ? 2024)"
   schedule_expression_timezone = "America/Los_Angeles"
   target {
     arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
