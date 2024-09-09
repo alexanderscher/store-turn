@@ -60,24 +60,25 @@ def lambda_handler(event, context):
     artists_payload = {
         "tracks": [
             {
-                "artist": "Dave Blunts",
+                "artist": "Avenoir",
                 "genres": {
-                    "s": ["0JQ5DAqbMKFQ00XGBls6ym"],
-                    "am": ["1533338569", "993297962"],
+                    "s": [
+                        "0JQ5DAqbMKFz6FAsUtgAab",
+                        "0JQ5DAqbMKFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFEZPnFQSFB1T",
+                    ],
+                    "am": ["1533338569", "6657994053"],
                 },
             },
             {
-                "artist": "Cash Cobain",
+                "artist": "Steinza",
                 "genres": {
-                    "s": ["0JQ5DAqbMKFQ00XGBls6ym"],
-                    "am": ["1533338569", "993297962", "6657994053"],
-                },
-            },
-            {
-                "artist": "lilbubblegum",
-                "genres": {
-                    "s": ["0JQ5DAqbMKFQ00XGBls6ym"],
-                    "am": ["993297962"],
+                    "s": [
+                        "0JQ5DAqbMKFz6FAsUtgAab",
+                        "0JQ5DAqbMKFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFy78wprEpAjl",
+                    ],
+                    "am": ["1533338569", "993289542", "1528193954"],
                 },
             },
         ]
