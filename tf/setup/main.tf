@@ -3,7 +3,6 @@ provider "aws" {
 
 }
 
-
 terraform {
   backend "s3" {
     bucket = "store-turn-tf-state-bucket"
