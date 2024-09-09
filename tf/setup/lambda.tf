@@ -48,10 +48,7 @@ resource "aws_lambda_function" "store_turn_apple" {
   }
 
 }
-
 # Data source to get the latest image digest from ECR
-
-
 resource "aws_lambda_function" "store_turn_invoke" {
   function_name    = "store-turn-invoke"
   role             = aws_iam_role.store_turn_invoke_role.arn

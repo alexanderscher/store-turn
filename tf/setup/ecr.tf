@@ -3,7 +3,7 @@ resource "aws_ecr_repository" "store_turn_apple_ecr" {
 }
 
 
-data "aws_ecr_image" "apple_st_ecr" {
+data "aws_ecr_image" "store_turn_apple_ecr" {
   repository_name = aws_ecr_repository.store_turn_apple_ecr.name
   image_tag       = "latest"
 }
