@@ -19,8 +19,17 @@ jobs:
           role-to-assume: arn:aws:iam::742736545134:role/store-turn-github-action
           aws-region: us-east-1
 
-      - name: Initialize Terraform for cron
-        run: cd ./tf/cron && terraform init
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./tf/cron
+
+      - name: Validate Terraform
+        run: terraform validate
+        working-directory: ./tf/cron
 
       - name: Apply Terraform cron schedule
-        run: cd ./tf/cron && terraform apply -auto-approve
+        working-directory: ./tf/cron
+        run: terraform apply -auto-approve

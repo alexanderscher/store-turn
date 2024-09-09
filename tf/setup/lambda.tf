@@ -1,3 +1,4 @@
+
 data "archive_file" "lambda" {
   type        = "zip"
   source_dir  = "${path.module}/../../spotify"
