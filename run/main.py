@@ -40,7 +40,7 @@ def lambda_handler(event, context):
             },
         ]
     }
-    lambda_functions = ["spotify-store-turn", "apple-store-turn"]
+    lambda_functions = ["store-turn-spotify", "store-turn-apple"]
     for p in artists_payload["tracks"]:
         for function_name in lambda_functions:
             print(f"Invoking {function_name} for {p}")

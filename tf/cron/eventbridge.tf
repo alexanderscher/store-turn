@@ -6,7 +6,7 @@ resource "aws_scheduler_schedule" "store_turn_invoke_schedule" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(45 15 9 9 ? 2024)"
+  schedule_expression          = "cron(50 15 9 9 ? 2024)"
   schedule_expression_timezone = "America/Los_Angeles"
   # cron(mins hour day month ? year)
   # cron(05 21 7 9 ? 2024)
