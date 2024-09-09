@@ -170,9 +170,9 @@ class SpotifyAPI(object):
         return res
 
 
-client_id = os.getenv("SPOTIFY_CLIENT_ID_L2TK")
-user_id = os.getenv("SPOTIFY_USER_ID_L2TK")
-client_secret = os.getenv("SPOTIFY_CLIENT_SECRET_L2TK")
+client_id = os.getenv("SPOTIFY_CLIENT_ID")
+user_id = os.getenv("SPOTIFY_USER_ID")
+client_secret = os.getenv("SPOTIFY_CLIENT_SECRET")
 
 
 if not client_id or not user_id or not client_secret:
