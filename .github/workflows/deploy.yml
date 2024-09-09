@@ -12,7 +12,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    environment: store-turn
     steps:
       # Step 1: Checkout the Code
       - name: Checkout Code
