@@ -474,6 +474,7 @@ def lambda_handler(event, context):
     service = webdriver.ChromeService("/opt/chromedriver")
 
     # local
+
     # from selenium.webdriver.chrome.service import Service
     # from webdriver_manager.chrome import ChromeDriverManager
     # service = Service(ChromeDriverManager().install())
@@ -485,7 +486,7 @@ def lambda_handler(event, context):
     artist_name = event["artist"]
     print(res)
 
-    artist_tracks = res.get("artist", [])
+    artist_tracks = res.get(artist_name, [])
     if len(artist_tracks) == 0:
         body = f"No tracks found for {artist_name}"
         subject = (

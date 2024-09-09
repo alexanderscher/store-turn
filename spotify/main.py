@@ -107,7 +107,7 @@ class SpotifyAPI(object):
                     else:
                         break
                 except requests.exceptions.MissingSchema:
-                    email_error(self.artist_name)
+
                     break
             self.playlists = playlist_ids_and_names
         except ConnectionError as e:
@@ -150,12 +150,8 @@ class SpotifyAPI(object):
                                 datetime_obj = datetime.fromisoformat(added[:-1])
                                 formatted_date = datetime_obj.strftime("%m/%d/%y")
                                 print(
-                                    " - ",
-                                    tr,
-                                    ":",
+                                    " found in playlist",
                                     self.playlists[idx]["name"],
-                                    "|",
-                                    f"{i + 1}/{len(resp['items'])} ({formatted_date})",
                                 )
                                 res.append(
                                     (
@@ -165,7 +161,7 @@ class SpotifyAPI(object):
                                     )
                                 )
                         except (TypeError, KeyError):
-                            email_error(self.artist_name)
+
                             pass
 
                 return res
@@ -177,7 +173,7 @@ class SpotifyAPI(object):
             except Exception as e:
                 email_error(self.artist_name)
                 print(f"An unexpected error occurred: {e}")
-                break
+                raise
 
         return res
 
@@ -222,7 +218,6 @@ class StoreTurn:
                     )
             except Exception as e:
                 print(f"Error finding artist in playlists: {e}")
-                email_error(artist)
                 continue
 
         return playlist
@@ -281,6 +276,9 @@ def lambda_handler(event, context):
     artist_playlists = playlists.get(artist_name, [])
 
     if len(artist_playlists) == 0:
+        subject = (
+            f"Spotify Store Turn: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
+        )
         body = f"No tracks found for {artist_name}"
         print(body)
         send_email(subject, body)
