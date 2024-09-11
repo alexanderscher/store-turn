@@ -9,7 +9,7 @@ resource "aws_scheduler_schedule" "store_turn_invoke_schedule_1" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(03 21 10 9 ? 2024)"
+  schedule_expression          = "cron(55 12 11 9 ? 2024)"
   schedule_expression_timezone = "America/Los_Angeles"
 
   target {

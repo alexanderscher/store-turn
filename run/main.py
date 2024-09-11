@@ -60,14 +60,29 @@ def lambda_handler(event, context):
     artists_payload = {
         "tracks": [
             {
-                "artist": "Avenoir",
+                "artist": "Dina Ayada",
                 "genres": {
                     "s": [
                         "0JQ5DAqbMKFz6FAsUtgAab",
                         "0JQ5DAqbMKFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFQ00XGBls6ym",
                         "0JQ5DAqbMKFEZPnFQSFB1T",
                     ],
-                    "am": ["1533338569", "6657994053"],
+                    "am": ["1533338569", "993297962", "6657994053"],
+                },
+            },
+            {
+                "artist": "ericdoa",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFz6FAsUtgAab",
+                        "0JQ5DAqbMKFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFEC4WFtoNRpw",
+                        "0JQ5DAqbMKFFtlLYUHv8bT",
+                        "0JQ5DAqbMKFCWjUTdzaG0e",
+                        "0JQ5DAqbMKFCfObibaOZbv",
+                    ],
+                    "am": ["976439548", "6657994053", "993289558", "1223622007"],
                 },
             },
         ]
