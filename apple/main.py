@@ -450,7 +450,7 @@ def send_email(subject, body) -> None:
             Destination={
                 "ToAddresses": [
                     "alexcscher@gmail.com",
-                    # "ari@listen2thekids.com",
+                    "ari@listen2thekids.com",
                 ],
             },
             Message={
