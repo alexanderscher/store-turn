@@ -15,6 +15,7 @@ from botocore.exceptions import ClientError
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException
+from typing import List, TypedDict, Union, Dict
 
 APPLE_TEAM_ID = os.getenv("APPLE_TEAM_ID")
 APPLE_KEY_ID = os.getenv("APPLE_KEY_ID")
@@ -64,8 +65,8 @@ class AppleMusicAPI:
             self._session = requests.api
         self.playlist_ids = None
         self.driver: WebDriver = driver
-        self.res = []
-        self.artist = artist
+        self.res: List[str] = []
+        self.artist: str = artist
 
     def token_is_valid(self):
         return (
@@ -166,7 +167,7 @@ class AppleMusicAPI:
                     email_error(self.artist)
                     raise
 
-    def get_playlist_ids(self, genre):
+    def get_playlist_ids(self, genre) -> None:
         self.driver.get(f"https://music.apple.com/us/room/{genre}")
 
         wait = WebDriverWait(self.driver, 20)
@@ -207,7 +208,7 @@ class AppleMusicAPI:
 
         self.playlist_ids = ids
 
-    def scrape(self, genre):
+    def scrape(self, genre) -> None:
         try:
             self.get_playlist_ids(genre)
         except Exception as e:
@@ -215,7 +216,7 @@ class AppleMusicAPI:
             print("Something went wrong.")
             raise
 
-    def search_artist(self, track_artist: str):
+    def search_artist(self, track_artist: str) -> None:
         if not len(self.playlist_ids):
             MyException = "There are no playlists to search!"
             raise MyException("There are no playlists to search!")
@@ -247,7 +248,7 @@ class AppleMusicAPI:
                     except KeyError:
                         pass
 
-    def new_music_daily(self, track_artist):
+    def new_music_daily(self, track_artist) -> None:
 
         pl_info = self._get(
             f"https://api.music.apple.com/v1/catalog/us/playlists/pl.2b0e6e332fdf4b7a91164da3162127b5"
@@ -272,7 +273,7 @@ class AppleMusicAPI:
             except KeyError:
                 pass
 
-    def apple_songs(self, url: str, roster: str, chart: str):
+    def apple_songs(self, url: str, roster: str, chart: str) -> None:
 
         self.driver.get(url)
         time.sleep(5)
@@ -291,7 +292,7 @@ class AppleMusicAPI:
             email_error(roster)
             raise Exception("No songs found")
 
-    def apple_albums(self, url: str, roster: str, chart: str):
+    def apple_albums(self, url: str, roster: str, chart: str) -> None:
         self.driver.get(url)
         time.sleep(5)
         print("checking", chart)
@@ -311,7 +312,7 @@ class AppleMusicAPI:
             except NoSuchElementException:
                 pass
 
-    def all(self, artist):
+    def all(self, artist) -> None:
         self.apple_songs(
             "https://music.apple.com/us/room/1457265758",
             artist,
@@ -329,7 +330,7 @@ class AppleMusicAPI:
             "New Music All Genres - Albums",
         )
 
-    def hihop(self, artist):
+    def hihop(self, artist) -> None:
         self.apple_albums(
             "https://music.apple.com/us/room/1532319379",
             artist,
@@ -341,7 +342,7 @@ class AppleMusicAPI:
             "Best New Songs Hip Hop",
         )
 
-    def pop(self, artist):
+    def pop(self, artist) -> None:
         self.apple_albums(
             "https://music.apple.com/us/room/993298537",
             artist,
@@ -353,7 +354,7 @@ class AppleMusicAPI:
             "Best New Songs Pop",
         )
 
-    def rb(self, artist):
+    def rb(self, artist) -> None:
         self.apple_albums(
             "https://music.apple.com/us/room/993298342",
             artist,
@@ -369,17 +370,29 @@ class AppleMusicAPI:
         )
 
 
-class StoreTurn:
+class Genres(TypedDict):
+    s: List[str]
+    am: List[str]
 
+
+class ArtistEvent(TypedDict):
+    artist: str
+    genres: Genres
+
+
+class StoreTurn:
     def __init__(self, artist, driver):
-        self.artist = artist
-        self.driver = driver
+        self.artist: ArtistEvent = artist
+        self.driver: WebDriver = driver
         self.apple_music_client = AppleMusicAPI(
-            APPLE_PRIVATE_KEY, APPLE_KEY_ID, APPLE_TEAM_ID, self.driver, self.artist
+            APPLE_PRIVATE_KEY,
+            APPLE_KEY_ID,
+            APPLE_TEAM_ID,
+            self.driver,
+            self.artist["artist"],
         )
 
-    def find_artist(self):
-
+    def find_artist(self) -> Dict[str, List[str]]:
         res = {}
 
         print("\n" + self.artist["artist"] + "\n")
@@ -411,15 +424,19 @@ class StoreTurn:
         return res
 
 
-def email_error(artist_name):
+def email_error(artist_name) -> Dict[str, str]:
     subject = (
         f"Aooke Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
     )
     body = f"An error occurred while searching for {artist_name}"
     send_email(subject, body)
+    return {
+        "statusCode": 500,
+        "body": "Error occurred while searching for artist. Error email.",
+    }
 
 
-def send_email(subject, body):
+def send_email(subject, body) -> None:
     ses_client = boto3.client(
         "ses",
         region_name="us-east-1",
@@ -455,7 +472,7 @@ def send_email(subject, body):
         print(f"Email sent! Message ID: {response['MessageId']}")
 
 
-def lambda_handler(event, context):
+def lambda_handler(event, context) -> Dict[str, Union[int, str]]:
     options = webdriver.ChromeOptions()
 
     options.binary_location = "/opt/chrome/chrome"
@@ -479,7 +496,7 @@ def lambda_handler(event, context):
     # from webdriver_manager.chrome import ChromeDriverManager
     # service = Service(ChromeDriverManager().install())
 
-    driver: WebDriver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome(service=service, options=options)
     print(event)
     store_turn_artist = StoreTurn(event, driver)
     res = store_turn_artist.find_artist()

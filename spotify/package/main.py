@@ -7,6 +7,7 @@ import base64
 import os
 import boto3
 from botocore.exceptions import ClientError
+from typing import List, TypedDict, Union, Dict
 
 
 class SpotifyAPI(object):
@@ -19,17 +20,17 @@ class SpotifyAPI(object):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.access_token = None
-        self.access_token_expires = datetime.now()
-        self.access_token_did_expire = True
-        self.token_url = "https://accounts.spotify.com/api/token"
-        self.playlists = []  # Instance-level attribute
-        self.checked_playlists = []  # Instance-level attribute
-        self.artist_name = artist_name
+        self.client_id: str = client_id
+        self.client_secret: str = client_secret
+        self.access_token: str = None
+        self.access_token_expires: datetime = datetime.now()
+        self.access_token_did_expire: bool = True
+        self.token_url: str = "https://accounts.spotify.com/api/token"
+        self.playlists: List[str] = []
+        self.checked_playlists: List[str] = []
+        self.artist_name: str = artist_name
 
-    def get_client_credentials(self):
+    def get_client_credentials(self) -> str:
         client_id = self.client_id
         client_secret = self.client_secret
         if client_secret is None or client_id is None:
@@ -38,14 +39,14 @@ class SpotifyAPI(object):
         client_creds_b64 = base64.b64encode(client_creds.encode())
         return client_creds_b64.decode()
 
-    def get_token_headers(self):
+    def get_token_headers(self) -> Dict[str, str]:
         client_creds_b64 = self.get_client_credentials()
         return {"Authorization": f"Basic {client_creds_b64}"}
 
-    def get_token_data(self):
+    def get_token_data(self) -> Dict[str, str]:
         return {"grant_type": "client_credentials"}
 
-    def perform_auth(self):
+    def perform_auth(self) -> bool:
         token_url = self.token_url
         token_data = self.get_token_data()
         token_headers = self.get_token_headers()
@@ -62,7 +63,7 @@ class SpotifyAPI(object):
         self.access_token_did_expire = expires < now
         return True
 
-    def get_access_token(self):
+    def get_access_token(self) -> str:
         token = self.access_token
         expired = self.access_token_did_expire
         if token is None or expired:
@@ -70,16 +71,7 @@ class SpotifyAPI(object):
             return self.get_access_token()
         return token
 
-    def search(self, search_query, search_type):
-        access_token = self.get_access_token()
-        headers = {"Authorization": f"Bearer {access_token}"}
-        endpoint = "https://api.spotify.com/v1/search"
-        data = urlencode({"q": search_query, "type": search_type})
-        lookup_url = f"{endpoint}?{data}"
-        r = requests.get(lookup_url, headers=headers)
-        print(r.status_code)
-
-    def get_playlists_from_category(self, category, country):
+    def get_playlists_from_category(self, category, country) -> Union[None, list]:
         try:
             access_token = self.get_access_token()
             headers = {"Authorization": f"Bearer {access_token}"}
@@ -115,7 +107,7 @@ class SpotifyAPI(object):
             time.sleep(30)
             return self.get_playlists_from_category(category, "US")
 
-    def find_artist_in_playlists(self, artist_name):
+    def find_artist_in_playlists(self, artist_name) -> List[str]:
         while True:
             res = []
             try:
@@ -175,8 +167,6 @@ class SpotifyAPI(object):
                 print(f"An unexpected error occurred: {e}")
                 raise
 
-        return res
-
 
 client_id = os.getenv("SPOTIFY_CLIENT_ID")
 user_id = os.getenv("SPOTIFY_USER_ID")
@@ -187,18 +177,31 @@ if not client_id or not user_id or not client_secret:
     raise ValueError("Missing required environment variables for Spotify API")
 
 
+class Genres(TypedDict):
+    s: List[str]
+    am: List[str]
+
+
+class ArtistEvent(TypedDict):
+    artist: str
+    genres: Genres
+
+
+Playlist = Dict[str, List[Dict[str, str]]]
+
+
 class StoreTurn:
     def __init__(self, artist):
-        self.artist = artist
+        self.artist: ArtistEvent = artist
         self.spotify_client = SpotifyAPI(
             client_id, client_secret, self.artist["artist"]
         )
 
-    def find_artist(self):
+    def find_artist(self) -> Playlist:
         artist = self.artist["artist"]
-        playlist = {artist: []}
+        playlist: Playlist = {artist: []}
 
-        for genre in self.artist.get("genres", {}).get("s", []):
+        for genre in self.artist["genres"]["s"]:
             print(f"Getting playlists from {genre}")
             self.spotify_client.get_playlists_from_category(genre, "US")
             print(f"Searching playlists in {genre}")
@@ -207,7 +210,8 @@ class StoreTurn:
                     self.artist["artist"]
                 )
                 if not res:
-                    print("None")
+                    email_error(artist)
+                    raise
                 for r in res:
                     playlist[artist].append(
                         {
@@ -223,13 +227,17 @@ class StoreTurn:
         return playlist
 
 
-def email_error(artist_name):
+def email_error(artist_name: str) -> Dict[str, str]:
     subject = f"Spotify Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
     body = f"An error occurred while searching for {artist_name}"
     send_email(subject, body)
+    return {
+        "statusCode": 500,
+        "body": "Error occurred while searching for artist. Error email.",
+    }
 
 
-def send_email(subject, body):
+def send_email(subject: str, body: str) -> None:
     ses_client = boto3.client(
         "ses",
         region_name="us-east-1",
@@ -265,14 +273,13 @@ def send_email(subject, body):
         print(f"Email sent! Message ID: {response['MessageId']}")
 
 
-def lambda_handler(event, context):
+def lambda_handler(event: ArtistEvent, context) -> Dict[str, Union[int, str]]:
     artist_name = event["artist"]
     body = ""
 
     print(f"Starting search for {artist_name}")
     store_turn_artist = StoreTurn(event)
-    playlists = store_turn_artist.find_artist()
-
+    playlists: Playlist = store_turn_artist.find_artist()
     artist_playlists = playlists.get(artist_name, [])
 
     if len(artist_playlists) == 0:
