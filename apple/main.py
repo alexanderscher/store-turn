@@ -425,7 +425,9 @@ class StoreTurn:
 
 
 def email_error(artist_name) -> Dict[str, str]:
-    subject = f"Applee Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
+    subject = (
+        f"Apple Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
+    )
     body = f"An error occurred while searching for {artist_name}"
     send_email(subject, body)
     return {

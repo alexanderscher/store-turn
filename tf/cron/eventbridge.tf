@@ -10,7 +10,7 @@ resource "aws_scheduler_schedule" "store_turn_invoke_schedule_test" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(15 13 11 9 ? 2024)"
+  schedule_expression          = "cron(25 13 11 9 ? 2024)"
   schedule_expression_timezone = "America/Los_Angeles"
 
   target {
