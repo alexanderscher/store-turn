@@ -210,8 +210,7 @@ class StoreTurn:
                     self.artist["artist"]
                 )
                 if not res:
-                    email_error(artist)
-                    raise
+                    print(f"No tracks found for {artist} in {genre}")
                 for r in res:
                     playlist[artist].append(
                         {
