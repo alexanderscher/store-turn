@@ -425,9 +425,7 @@ class StoreTurn:
 
 
 def email_error(artist_name) -> Dict[str, str]:
-    subject = (
-        f"Aooke Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
-    )
+    subject = f"Applee Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
     body = f"An error occurred while searching for {artist_name}"
     send_email(subject, body)
     return {
@@ -522,7 +520,9 @@ def lambda_handler(event, context) -> Dict[str, Union[int, str]]:
             track, playlist_name, position = track_info
             body += f" - {track}: {playlist_name} | {position}\n"
 
-    subject = f"Apple Store Turn - {datetime.now().strftime('%m/%d/%y')}"
+    subject = (
+        f"Apple Store Turn: : {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
+    )
     print(body)
     send_email(subject, body)
     driver.quit()

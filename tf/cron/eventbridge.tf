@@ -1,7 +1,8 @@
 # cron(mins hour day month ? year)
 # cron(05 21 7 9 ? 2024)
 
-resource "aws_scheduler_schedule" "store_turn_invoke_schedule_1" {
+
+resource "aws_scheduler_schedule" "store_turn_invoke_schedule_test" {
   name       = "store-turn-invoke-schedule-1"
   group_name = "default"
 
@@ -9,7 +10,7 @@ resource "aws_scheduler_schedule" "store_turn_invoke_schedule_1" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(55 12 11 9 ? 2024)"
+  schedule_expression          = "cron(15 13 11 9 ? 2024)"
   schedule_expression_timezone = "America/Los_Angeles"
 
   target {
@@ -17,6 +18,23 @@ resource "aws_scheduler_schedule" "store_turn_invoke_schedule_1" {
     role_arn = aws_iam_role.store_turn_scheduler_role.arn
   }
 }
+
+# resource "aws_scheduler_schedule" "store_turn_invoke_schedule_1" {
+#   name       = "store-turn-invoke-schedule-1"
+#   group_name = "default"
+
+#   flexible_time_window {
+#     mode = "OFF"
+#   }
+
+#   schedule_expression          = "cron(03 21 12 9 ? 2024)"
+#   schedule_expression_timezone = "America/Los_Angeles"
+
+#   target {
+#     arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
+#     role_arn = aws_iam_role.store_turn_scheduler_role.arn
+#   }
+# }
 
 # resource "aws_scheduler_schedule" "store_turn_invoke_schedule_2" {
 #   name       = "store-turn-invoke-schedule-2"
@@ -26,7 +44,23 @@ resource "aws_scheduler_schedule" "store_turn_invoke_schedule_1" {
 #     mode = "OFF"
 #   }
 
-#   schedule_expression          = "cron(10 21 11 9 ? 2024)"
+#   schedule_expression          = "cron(15 21 12 9 ? 2024)"
+#   schedule_expression_timezone = "America/Los_Angeles"
+#   target {
+#     arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
+#     role_arn = aws_iam_role.store_turn_scheduler_role.arn
+#   }
+# }
+
+# resource "aws_scheduler_schedule" "store_turn_invoke_schedule_3" {
+#   name       = "store-turn-invoke-schedule-3"
+#   group_name = "default"
+
+#   flexible_time_window {
+#     mode = "OFF"
+#   }
+
+#   schedule_expression          = "cron(30 21 12 9 ? 2024)"
 #   schedule_expression_timezone = "America/Los_Angeles"
 #   target {
 #     arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"

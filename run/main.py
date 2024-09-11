@@ -82,7 +82,7 @@ def lambda_handler(event, context):
                         "0JQ5DAqbMKFCWjUTdzaG0e",
                         "0JQ5DAqbMKFCfObibaOZbv",
                     ],
-                    "am": ["976439548", "6657994053", "993289558", "1223622007"],
+                    "am": ["976439548", "6657994053", "993289558", "993298539"],
                 },
             },
         ]
