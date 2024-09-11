@@ -107,7 +107,7 @@ class SpotifyAPI(object):
             time.sleep(30)
             return self.get_playlists_from_category(category, "US")
 
-    def find_artist_in_playlists(self, artist_name) -> List[str]:
+    def find_artist_in_playlists(self, artist_name: str) -> List[str]:
         while True:
             res = []
             try:
@@ -118,9 +118,11 @@ class SpotifyAPI(object):
                 access_token = self.get_access_token()
                 headers = {"Authorization": f"Bearer {access_token}"}
 
-                def check_artists(artists):
+                def check_artists(artists: List[Dict[str, str]]) -> bool:
+
                     for artist in artists:
                         if artist["name"].lower() == artist_name.lower():
+
                             return True
                     return False
 
@@ -142,7 +144,7 @@ class SpotifyAPI(object):
                                 datetime_obj = datetime.fromisoformat(added[:-1])
                                 formatted_date = datetime_obj.strftime("%m/%d/%y")
                                 print(
-                                    " found in playlist",
+                                    "found in playlist",
                                     self.playlists[idx]["name"],
                                 )
                                 res.append(
@@ -153,7 +155,6 @@ class SpotifyAPI(object):
                                     )
                                 )
                         except (TypeError, KeyError):
-
                             pass
 
                 return res
@@ -229,14 +230,14 @@ class StoreTurn:
 def email_error(artist_name: str) -> Dict[str, str]:
     subject = f"Spotify Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
     body = f"An error occurred while searching for {artist_name}"
-    send_email(subject, body)
+    send_email_aws(subject, body)
     return {
         "statusCode": 500,
         "body": "Error occurred while searching for artist. Error email.",
     }
 
 
-def send_email(subject: str, body: str) -> None:
+def send_email_aws(subject: str, body: str) -> None:
     ses_client = boto3.client(
         "ses",
         region_name="us-east-1",
@@ -288,7 +289,7 @@ def lambda_handler(event: ArtistEvent, context) -> Dict[str, Union[int, str]]:
         )
         body = f"No tracks found for {artist_name}"
         print(body)
-        send_email(subject, body)
+        send_email_aws(subject, body)
         return {"statusCode": 200, "body": "No tracks found"}
 
     for a, tracks in playlists.items():
@@ -299,12 +300,11 @@ def lambda_handler(event: ArtistEvent, context) -> Dict[str, Union[int, str]]:
             position = track_info["position"]
             body += f" - {track}: {playlist_name} | {position}\n"
     print("Finished")
-    time.sleep(10)
 
     subject = (
         f"Spotify Store Turn: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
     )
     print(body)
-    send_email(subject, body)
+    send_email_aws(subject, body)
 
     return {"statusCode": 200, "body": "Execution completed successfully"}
