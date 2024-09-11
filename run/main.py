@@ -70,17 +70,6 @@ def lambda_handler(event, context):
                     "am": ["1533338569", "6657994053"],
                 },
             },
-            {
-                "artist": "Steinza",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFz6FAsUtgAab",
-                        "0JQ5DAqbMKFQIL0AXnG5AK",
-                        "0JQ5DAqbMKFy78wprEpAjl",
-                    ],
-                    "am": ["1533338569", "993289542", "1528193954"],
-                },
-            },
         ]
     }
     lambda_functions = ["store-turn-spotify", "store-turn-apple"]
