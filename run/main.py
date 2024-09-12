@@ -64,7 +64,7 @@ def lambda_handler(event, context):
                 "genres": {
                     "s": [
                         "0JQ5DAqbMKFz6FAsUtgAab",
-                        "0JQ5DAqbMKsFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFQIL0AXnG5AK",
                         "0JQ5DAqbMKFQ00XGBls6ym",
                         "0JQ5DAqbMKFEZPnFQSFB1T",
                     ],
@@ -83,6 +83,17 @@ def lambda_handler(event, context):
                         "0JQ5DAqbMKFCfObibaOZbv",
                     ],
                     "am": ["1533338569", "993298539", "993289558", "1223622007"],
+                },
+            },
+            {
+                "artist": "MOONLGHT",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFz6FAsUtgAab",
+                        "0JQ5DAqbMKFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFHOzuVTgTizF",
+                    ],
+                    "am": ["16560106420"],
                 },
             },
         ]
