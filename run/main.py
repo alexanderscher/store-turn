@@ -1,9 +1,8 @@
 import boto3
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from botocore.exceptions import ClientError
-
 
 lambda_client = boto3.client("lambda")
 
