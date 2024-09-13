@@ -92,7 +92,7 @@ def lambda_handler(event, context):
                         "0JQ5DAqbMKFQIL0AXnG5AK",
                         "0JQ5DAqbMKFHOzuVTgTizF",
                     ],
-                    "am": ["16560106420"],
+                    "am": ["6560106420"],
                 },
             },
         ]
