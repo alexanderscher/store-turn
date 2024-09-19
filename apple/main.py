@@ -222,31 +222,34 @@ class AppleMusicAPI:
             raise MyException("There are no playlists to search!")
         else:
             for pl in self.playlist_ids:
-                pl_info = self._get(
-                    f"https://api.music.apple.com/v1/catalog/us/playlists/{pl}"
-                )
-                pl_name = pl_info["data"][0]["attributes"]["name"]
-                pl_tracks = pl_info["data"][0]["relationships"]["tracks"]["data"]
-                for i, track in enumerate(pl_tracks):
-                    try:
-                        if (
-                            track_artist.lower()
-                            in track["attributes"]["artistName"].lower()
-                        ):
-                            print(
-                                "found in playlist:",
-                                pl_name,
-                            )
-                            self.res.append(
-                                (
-                                    track["attributes"]["name"],
+                try:
+                    pl_info = self._get(
+                        f"https://api.music.apple.com/v1/catalog/us/playlists/{pl}"
+                    )
+                    pl_name = pl_info["data"][0]["attributes"]["name"]
+                    pl_tracks = pl_info["data"][0]["relationships"]["tracks"]["data"]
+                    for i, track in enumerate(pl_tracks):
+                        try:
+                            if (
+                                track_artist.lower()
+                                in track["attributes"]["artistName"].lower()
+                            ):
+                                print(
+                                    "found in playlist:",
                                     pl_name,
-                                    f"{i + 1}/{len(pl_tracks)}",
                                 )
-                            )
+                                self.res.append(
+                                    (
+                                        track["attributes"]["name"],
+                                        pl_name,
+                                        f"{i + 1}/{len(pl_tracks)}",
+                                    )
+                                )
 
-                    except KeyError:
-                        pass
+                        except KeyError:
+                            pass
+                except HTTPError:
+                    pass
 
     def new_music_daily(self, track_artist) -> None:
 
@@ -492,7 +495,6 @@ def lambda_handler(event, context) -> Dict[str, Union[int, str]]:
     service = webdriver.ChromeService("/opt/chromedriver")
 
     # local
-
     # from selenium.webdriver.chrome.service import Service
     # from webdriver_manager.chrome import ChromeDriverManager
     # service = Service(ChromeDriverManager().install())
