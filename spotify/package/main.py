@@ -251,7 +251,8 @@ def send_email_aws(subject: str, body: str) -> None:
             Destination={
                 "ToAddresses": [
                     "alexcscher@gmail.com",
-                    # "ari@listen2thekids.com",
+                    "ari@listen2thekids.com",
+                    "laura@listen2thekids.com",
                 ],
             },
             Message={
