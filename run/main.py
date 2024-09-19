@@ -71,17 +71,6 @@ def lambda_handler(event, context):
                 },
             },
             {
-                "artist": "smokedope2016",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFz6FAsUtgAab",
-                        "0JQ5DAqbMKFQIL0AXnG5AK",
-                        "0JQ5DAqbMKFQ00XGBls6ym",
-                    ],
-                    "am": ["1533338569", "993297962"],
-                },
-            },
-            {
                 "artist": "Fordo",
                 "genres": {
                     "s": [
@@ -92,18 +81,6 @@ def lambda_handler(event, context):
                         "0JQ5DAqbMKFEZPnFQSFB1T",
                     ],
                     "am": ["1533338569", "993298539", "993297962", "6657994053"],
-                },
-            },
-            {
-                "artist": "Pacific",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFRieVZLLoo9m",
-                        "0JQ5DAqbMKFJw7QLnM27p6",
-                        "0JQ5DAqbMKFFzDl7qN9Apr",
-                        "0JQ5DAqbMKFLVaM30PMBm4",
-                    ],
-                    "am": ["6471926196", "1562276019"],
                 },
             },
         ]
