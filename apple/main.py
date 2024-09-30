@@ -139,32 +139,33 @@ class AppleMusicAPI:
         """
         retries = self.max_retries
         delay = 1
-        while retries > 0:
+
+        while retries >= 0:
             try:
                 return self._call("GET", url, kwargs)
             except HTTPError as e:
-                retries -= 1
                 status = e.response.status_code
                 if status == 429 or (500 <= status < 600):
-                    if retries < 0:
+                    if retries <= 0:
                         email_error(self.artist)
                         raise
                     else:
-                        print("retrying ..." + str(delay) + " secs")
-                        time.sleep(delay + 1)
+                        print("Retrying after " + str(delay) + " secs...")
+                        time.sleep(delay)
                         delay += 1
+                        retries -= 1
                 else:
                     raise
             except Exception as e:
-                print("exception", str(e))
-                retries -= 1
-                if retries >= 0:
-                    print("retrying ..." + str(delay) + "secs")
-                    time.sleep(delay + 1)
-                    delay += 1
-                else:
+                print("Exception occurred: ", str(e))
+                if retries <= 0:
                     email_error(self.artist)
                     raise
+                else:
+                    print("Retrying after " + str(delay) + " secs...")
+                    time.sleep(delay)
+                    delay += 1
+                    retries -= 1
 
     def get_playlist_ids(self, genre) -> None:
         self.driver.get(f"https://music.apple.com/us/room/{genre}")

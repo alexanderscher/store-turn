@@ -2,6 +2,8 @@ import pytest
 from unittest.mock import patch, MagicMock
 from main import AppleMusicAPI
 from unittest import mock
+from requests.exceptions import HTTPError
+
 
 APPLE_TEAM_ID = "test_team_id"
 APPLE_KEY_ID = "test_key_id"
@@ -101,3 +103,25 @@ def test_successful_get(mock_call, apple_api):
     )
 
     assert result == {"key": "value"}
+
+
+@patch("main.email_error")  # Adjust based on your actual module path
+@patch("time.sleep")  # Mock sleep to avoid waiting
+@patch.object(AppleMusicAPI, "_call")
+def test_get_retries_429_logic(mock_call, mock_sleep, mock_email_error, apple_api):
+    # Simulate HTTPError with status code 429
+    error_429 = HTTPError("Too Many Requests")
+    error_429.response = MagicMock(status_code=429)
+
+    # Set the side effect to raise the error
+    mock_call.side_effect = error_429
+
+    apple_api.max_retries = 1  # Set to 1 to test one retry
+
+    url = "https://api.music.apple.com/v1/catalog/us/playlists/pl.2b0e6e332fdf4b7a91164da3162127b5"
+
+    with pytest.raises(HTTPError, match="Too Many Requests"):
+        apple_api._get(url)
+
+    mock_email_error.assert_called_once_with(apple_api.artist)
+    print("mock_email_error called")
