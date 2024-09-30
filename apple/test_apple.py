@@ -3,6 +3,7 @@ from unittest.mock import patch, MagicMock
 from main import AppleMusicAPI
 from unittest import mock
 from requests.exceptions import HTTPError
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 
 
 APPLE_TEAM_ID = "test_team_id"
@@ -105,18 +106,15 @@ def test_successful_get(mock_call, apple_api):
     assert result == {"key": "value"}
 
 
-@patch("main.email_error")  # Adjust based on your actual module path
-@patch("time.sleep")  # Mock sleep to avoid waiting
+@patch("main.email_error")
+@patch("time.sleep")
 @patch.object(AppleMusicAPI, "_call")
 def test_get_retries_429_logic(mock_call, mock_sleep, mock_email_error, apple_api):
-    # Simulate HTTPError with status code 429
     error_429 = HTTPError("Too Many Requests")
     error_429.response = MagicMock(status_code=429)
-
-    # Set the side effect to raise the error
     mock_call.side_effect = error_429
 
-    apple_api.max_retries = 1  # Set to 1 to test one retry
+    apple_api.max_retries = 1
 
     url = "https://api.music.apple.com/v1/catalog/us/playlists/pl.2b0e6e332fdf4b7a91164da3162127b5"
 
@@ -124,4 +122,23 @@ def test_get_retries_429_logic(mock_call, mock_sleep, mock_email_error, apple_ap
         apple_api._get(url)
 
     mock_email_error.assert_called_once_with(apple_api.artist)
-    print("mock_email_error called")
+
+
+def test_get_playlist_ids_success(apple_api):
+    apple_api.driver.current_url = "https://music.apple.com/us/room/test_genre"
+
+    mock_card_1 = MagicMock()
+    mock_card_1.find_element.return_value.get_attribute.return_value = (
+        "https://music.apple.com/us/room/pl.test_playlist_1"
+    )
+
+    mock_card_2 = MagicMock()
+    mock_card_2.find_element.return_value.get_attribute.return_value = (
+        "https://music.apple.com/us/room/pl.test_playlist_2"
+    )
+
+    apple_api.driver.find_elements.return_value = [mock_card_1, mock_card_2]
+
+    apple_api.get_playlist_ids("test_genre")
+
+    assert apple_api.playlist_ids == ["pl.test_playlist_1", "pl.test_playlist_2"]
