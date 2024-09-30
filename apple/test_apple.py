@@ -37,7 +37,7 @@ def test_generate_token(mock_jwt_encode, apple_api):
     mock_jwt_encode.assert_called_once()
 
 
-@patch("requests.Session")  # Patch the requests.Session globally
+@patch("requests.Session")
 @patch.object(AppleMusicAPI, "generate_token", return_value="mocked_token_string")
 @patch.object(AppleMusicAPI, "token_is_valid", return_value=True)
 @patch.object(
@@ -83,6 +83,21 @@ def test_call(
         proxies=None,
         params=None,
         timeout=None,
+    )
+
+    assert result == {"key": "value"}
+
+
+@patch.object(AppleMusicAPI, "_call", return_value={"key": "value"})
+def test_successful_get(mock_call, apple_api):
+    result = apple_api._get(
+        "https://api.music.apple.com/v1/catalog/us/playlists/pl.2b0e6e332fdf4b7a91164da3162127b5"
+    )
+
+    mock_call.assert_called_once_with(
+        "GET",
+        "https://api.music.apple.com/v1/catalog/us/playlists/pl.2b0e6e332fdf4b7a91164da3162127b5",
+        {},
     )
 
     assert result == {"key": "value"}
