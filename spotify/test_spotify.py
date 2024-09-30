@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from datetime import datetime, timedelta
+from datetime import datetime
 from spotify.package.main import SpotifyAPI
 from spotify.package.main import StoreTurn
 from spotify.package.main import lambda_handler
