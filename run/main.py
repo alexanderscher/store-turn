@@ -59,28 +59,38 @@ def lambda_handler(event, context):
     artists_payload = {
         "tracks": [
             {
-                "artist": "Dina Ayada",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFz6FAsUtgAab",
-                        "0JQ5DAqbMKFQIL0AXnG5AK",
-                        "0JQ5DAqbMKFQ00XGBls6ym",
-                        "0JQ5DAqbMKFEZPnFQSFB1T",
-                    ],
-                    "am": ["1533338569", "993297962", "6657994053"],
-                },
-            },
-            {
-                "artist": "Fordo",
+                "artist": "ericdoa",
                 "genres": {
                     "s": [
                         "0JQ5DAqbMKFz6FAsUtgAab",
                         "0JQ5DAqbMKFQIL0AXnG5AK",
                         "0JQ5DAqbMKFEC4WFtoNRpw",
-                        "0JQ5DAqbMKFQ00XGBls6ym",
-                        "0JQ5DAqbMKFEZPnFQSFB1T",
+                        "0JQ5DAqbMKFFtlLYUHv8bT",
+                        "0JQ5DAqbMKFCWjUTdzaG0e",
                     ],
-                    "am": ["1533338569", "993298539", "993297962", "6657994053"],
+                    "am": ["1533338569", "993298539", "993289558", "1223622007"],
+                },
+            },
+            {
+                "artist": "Dave Blunts",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFz6FAsUtgAab",
+                        "0JQ5DAqbMKFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFQ00XGBls6ym",
+                    ],
+                    "am": ["1533338569", "993297962"],
+                },
+            },
+            {
+                "artist": "smokedope2015",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFz6FAsUtgAab",
+                        "0JQ5DAqbMKFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFQ00XGBls6ym",
+                    ],
+                    "am": ["1533338569", "993297962"],
                 },
             },
         ]
