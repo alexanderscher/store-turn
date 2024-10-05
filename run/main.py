@@ -24,16 +24,14 @@ def send_email():
         aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
         aws_secret_access_key=os.getenv("AWD_SECRET_ACCESS_KEY"),
     )
-    sender = "alex@listen2thekids.com"
+    sender = os.getenv("ALEX")
 
     subject = f"Started Store Turn - {datetime.now().strftime('%m/%d/%y')}"
     body = f"Started Store Turn - {datetime.now().strftime('%m/%d/%y')}"
     try:
         response = ses_client.send_email(
             Destination={
-                "ToAddresses": [
-                    "alexcscher@gmail.com",
-                ],
+                "ToAddresses": [os.getenv("ALEX")],
             },
             Message={
                 "Body": {

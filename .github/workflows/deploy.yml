@@ -86,7 +86,11 @@ jobs:
             -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             -var "spotify_client_id=${{ secrets.SPOTIFY_CLIENT_ID }}" \
             -var "spotify_client_secret=${{ secrets.SPOTIFY_CLIENT_SECRET }}" \
-            -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}"
+            -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}" \
+            -var "alex=${{ secrets.ALEX }}" \
+            -var "ari=${{ secrets.ARI }}" \
+            -var "laura=${{ secrets.LAURA }}" \
+
         working-directory: ./tf/setup
 
       # Step 12: Apply Terraform changes
@@ -101,5 +105,8 @@ jobs:
           -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
           -var "spotify_client_id=${{ secrets.SPOTIFY_CLIENT_ID }}" \
           -var "spotify_client_secret=${{ secrets.SPOTIFY_CLIENT_SECRET }}" \
-          -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}"
+          -var "spotify_user_id=${{ secrets.SPOTIFY_USER_ID }}" \
+          -var "alex=${{ secrets.ALEX }}" \
+          -var "ari=${{ secrets.ARI }}" \
+          -var "laura=${{ secrets.LAURA }}" \
         working-directory: ./tf/setup

@@ -36,3 +36,13 @@ variable "apple_key_id" {
 variable "apple_private_key" {
   type = string
 }
+
+variable "alex" {
+  type = string
+}
+variable "ari" {
+  type = string
+}
+variable "laura" {
+  type = string
+}

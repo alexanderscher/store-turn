@@ -446,15 +446,15 @@ def send_email(subject, body) -> None:
         aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
         aws_secret_access_key=os.getenv("AWD_SECRET_ACCESS_KEY"),
     )
-    sender = "alex@listen2thekids.com"
+    sender = os.getenv("ALEX")
 
     try:
         response = ses_client.send_email(
             Destination={
                 "ToAddresses": [
-                    "alexcscher@gmail.com",
-                    # "ari@listen2thekids.com",
-                    # "laura@listen2thekids.com",
+                    os.getenv("ALEX"),
+                    # os.getenv("ARI"),
+                    # os.getenv("LAURA"),
                 ],
             },
             Message={
