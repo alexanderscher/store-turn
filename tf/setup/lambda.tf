@@ -9,6 +9,7 @@ data "archive_file" "store_turn_lambda_invoke" {
   type        = "zip"
   source_file = "${path.module}/../../run/main.py"
   output_path = "${path.module}/../../zip/invoke_lambda.zip"
+
 }
 
 resource "aws_lambda_function" "store_turn_spotify" {
@@ -64,5 +65,10 @@ resource "aws_lambda_function" "store_turn_invoke" {
   filename         = data.archive_file.store_turn_lambda_invoke.output_path
   source_code_hash = data.archive_file.store_turn_lambda_invoke.output_base64sha256
   timeout          = 200
+  environment {
+    variables = {
+      ALEX = var.alex
+    }
+  }
 }
 
