@@ -17,3 +17,4 @@ COPY main.py ./
 RUN chmod 755 /var/task/main.py
 
 CMD [ "main.lambda_handler" ]
+
