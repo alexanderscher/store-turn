@@ -286,7 +286,7 @@ class AppleMusicAPI:
             row = self.driver.find_elements(By.CLASS_NAME, "songs-list-row")
 
             for i, song in enumerate(row):
-                t = song.find_element(By.XPATH, ".//div[2]").text
+                t = song.find_element(By.CLASS_NAME, "songs-list-row__song-name").text
                 a = song.find_element(By.XPATH, ".//div[3]").text
                 if roster.lower() in a.lower():
                     print("found in playlist:", chart)
@@ -432,14 +432,14 @@ def email_error(artist_name) -> Dict[str, str]:
         f"Apple Store Turn Error: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
     )
     body = f"An error occurred while searching for {artist_name}"
-    send_email(subject, body)
+    send_email_ses(subject, body)
     return {
         "statusCode": 500,
         "body": "Error occurred while searching for artist. Error email.",
     }
 
 
-def send_email(subject, body) -> None:
+def send_email_ses(subject, body) -> None:
     ses_client = boto3.client(
         "ses",
         region_name="us-east-1",
@@ -514,7 +514,7 @@ def lambda_handler(event, context) -> Dict[str, Union[int, str]]:
             f"Apple Store Turn: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
         )
         print(body)
-        send_email(subject, body)
+        send_email_ses(subject, body)
         return {"statusCode": 200, "body": "No tracks found"}
 
     body = ""
@@ -527,6 +527,6 @@ def lambda_handler(event, context) -> Dict[str, Union[int, str]]:
 
     subject = f"Apple Store Turn: {artist_name} - {datetime.now().strftime('%m/%d/%y')}"
     print(body)
-    send_email(subject, body)
+    send_email_ses(subject, body)
     driver.quit()
     return {"statusCode": 200, "body": "Execution completed successfully"}
