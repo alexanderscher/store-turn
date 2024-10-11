@@ -55,7 +55,7 @@ def lambda_handler(event, context):
     artists_payload = {
         "tracks": [
             {
-                "artist": "Lil Durk",
+                "artist": "Dave Blunts",
                 "genres": {
                     "s": [
                         "0JQ5DAqbMKFz6FAsUtgAab",
@@ -63,6 +63,18 @@ def lambda_handler(event, context):
                         "0JQ5DAqbMKFQ00XGBls6ym",
                     ],
                     "am": ["1533338569", "993297962"],
+                },
+            },
+            {
+                "artist": "Charli XCX",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFz6FAsUtgAab",
+                        "0JQ5DAqbMKFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFEC4WFtoNRpw",
+                        "0JQ5DAqbMKFHOzuVTgTizF",
+                    ],
+                    "am": ["993298539", "6560106420"],
                 },
             },
         ]
