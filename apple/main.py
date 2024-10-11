@@ -286,8 +286,8 @@ class AppleMusicAPI:
             row = self.driver.find_elements(By.CLASS_NAME, "songs-list-row")
 
             for i, song in enumerate(row):
-                a = song.find_element(By.CLASS_NAME, "songs-list-row__song-name").text
-                t = song.find_element(By.CLASS_NAME, "songs-list-row__by-line").text
+                t = song.find_element(By.CLASS_NAME, "songs-list-row__song-name").text
+                a = song.find_element(By.CLASS_NAME, "songs-list-row__by-line").text
                 if roster.lower() in a.lower():
                     print("found in playlist:", chart)
                     self.res.append((t, chart, f"{str(i + 1)}/{str(len(row))}"))
