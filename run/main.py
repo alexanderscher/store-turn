@@ -17,12 +17,10 @@ def invoke_lambda_with_artists(artists_payload, function_name):
     return response
 
 
-def send_email():
+def send_email_ses():
     ses_client = boto3.client(
         "ses",
         region_name="us-east-1",
-        # aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
-        # aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
     )
     sender = os.getenv("ALEX")
 
@@ -57,31 +55,7 @@ def lambda_handler(event, context):
     artists_payload = {
         "tracks": [
             {
-                "artist": "ericdoa",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFz6FAsUtgAab",
-                        "0JQ5DAqbMKFQIL0AXnG5AK",
-                        "0JQ5DAqbMKFEC4WFtoNRpw",
-                        "0JQ5DAqbMKFFtlLYUHv8bT",
-                        "0JQ5DAqbMKFCWjUTdzaG0e",
-                    ],
-                    "am": ["1533338569", "993298539", "993289558", "1223622007"],
-                },
-            },
-            {
-                "artist": "Dave Blunts",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFz6FAsUtgAab",
-                        "0JQ5DAqbMKFQIL0AXnG5AK",
-                        "0JQ5DAqbMKFQ00XGBls6ym",
-                    ],
-                    "am": ["1533338569", "993297962"],
-                },
-            },
-            {
-                "artist": "smokedope2015",
+                "artist": "Lil Durk",
                 "genres": {
                     "s": [
                         "0JQ5DAqbMKFz6FAsUtgAab",
@@ -100,5 +74,5 @@ def lambda_handler(event, context):
             print(f"Invoking {function_name} for {p}")
             response = invoke_lambda_with_artists(p, function_name)
             print(response)
-    send_email()
+    send_email_ses()
     return {"statusCode": 200, "body": "Lambdas invoked"}
