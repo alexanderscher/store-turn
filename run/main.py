@@ -85,17 +85,17 @@ def lambda_handler(event, context):
                     "am": ["993298539", "6657994053"],
                 },
             },
-            {
-                "artist": "Nic Dean",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFEC4WFtoNRpw",
-                        "0JQ5DAqbMKFAUsdyVjCQuL",
-                        "0JQ5DAqbMKFEZPnFQSFB1T",
-                    ],
-                    "am": ["993298539", "6657994053"],
-                },
-            },
+            # {
+            #     "artist": "Nic Dean",
+            #     "genres": {
+            #         "s": [
+            #             "0JQ5DAqbMKFEC4WFtoNRpw",
+            #             "0JQ5DAqbMKFAUsdyVjCQuL",
+            #             "0JQ5DAqbMKFEZPnFQSFB1T",
+            #         ],
+            #         "am": ["993298539", "6657994053"],
+            #     },
+            # },
             {
                 "artist": "Rosé",
                 "genres": {
