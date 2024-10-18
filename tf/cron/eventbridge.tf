@@ -44,7 +44,7 @@ resource "aws_scheduler_schedule" "store_turn_invoke_schedule_3" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(30 21 10 10 ? 2024)"
+  schedule_expression          = "cron(30 21 17 10 ? 2024)"
   schedule_expression_timezone = "America/Los_Angeles"
   target {
     arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
