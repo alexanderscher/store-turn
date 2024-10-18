@@ -3,54 +3,54 @@
 
 
 
-# resource "aws_scheduler_schedule" "store_turn_invoke_schedule_1" {
-#   name       = "store-turn-invoke-schedule-1"
-#   group_name = "default"
+resource "aws_scheduler_schedule" "store_turn_invoke_schedule_1" {
+  name       = "store-turn-invoke-schedule-1"
+  group_name = "default"
 
-#   flexible_time_window {
-#     mode = "OFF"
-#   }
+  flexible_time_window {
+    mode = "OFF"
+  }
 
-#   schedule_expression          = "cron(03 21 17 10 ? 2024)"
-#   schedule_expression_timezone = "America/Los_Angeles"
+  schedule_expression          = "cron(03 21 17 10 ? 2024)"
+  schedule_expression_timezone = "America/Los_Angeles"
 
-#   target {
-#     arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
-#     role_arn = aws_iam_role.store_turn_scheduler_role.arn
-#   }
-# }
+  target {
+    arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
+    role_arn = aws_iam_role.store_turn_scheduler_role.arn
+  }
+}
 
-# resource "aws_scheduler_schedule" "store_turn_invoke_schedule_2" {
-#   name       = "store-turn-invoke-schedule-2"
-#   group_name = "default"
+resource "aws_scheduler_schedule" "store_turn_invoke_schedule_2" {
+  name       = "store-turn-invoke-schedule-2"
+  group_name = "default"
 
-#   flexible_time_window {
-#     mode = "OFF"
-#   }
+  flexible_time_window {
+    mode = "OFF"
+  }
 
-#   schedule_expression          = "cron(15 21 17 10 ? 2024)"
-#   schedule_expression_timezone = "America/Los_Angeles"
-#   target {
-#     arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
-#     role_arn = aws_iam_role.store_turn_scheduler_role.arn
-#   }
-# }
+  schedule_expression          = "cron(15 21 17 10 ? 2024)"
+  schedule_expression_timezone = "America/Los_Angeles"
+  target {
+    arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
+    role_arn = aws_iam_role.store_turn_scheduler_role.arn
+  }
+}
 
-# resource "aws_scheduler_schedule" "store_turn_invoke_schedule_3" {
-#   name       = "store-turn-invoke-schedule-3"
-#   group_name = "default"
+resource "aws_scheduler_schedule" "store_turn_invoke_schedule_3" {
+  name       = "store-turn-invoke-schedule-3"
+  group_name = "default"
 
-#   flexible_time_window {
-#     mode = "OFF"
-#   }
+  flexible_time_window {
+    mode = "OFF"
+  }
 
-#   schedule_expression          = "cron(30 21 10 10 ? 2024)"
-#   schedule_expression_timezone = "America/Los_Angeles"
-#   target {
-#     arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
-#     role_arn = aws_iam_role.store_turn_scheduler_role.arn
-#   }
-# }
+  schedule_expression          = "cron(30 21 10 10 ? 2024)"
+  schedule_expression_timezone = "America/Los_Angeles"
+  target {
+    arn      = "arn:aws:lambda:us-east-1:742736545134:function:store-turn-invoke"
+    role_arn = aws_iam_role.store_turn_scheduler_role.arn
+  }
+}
 
 
 

@@ -65,6 +65,58 @@ def lambda_handler(event, context):
                     "am": ["1533338569", "993297962"],
                 },
             },
+            {
+                "artist": "Steinza",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFy78wprEpAjl",
+                    ],
+                    "am": ["993289542", "1528193954"],
+                },
+            },
+            {
+                "artist": "Omido",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFEC4WFtoNRpw",
+                        "0JQ5DAqbMKFAUsdyVjCQuL",
+                        "0JQ5DAqbMKFEZPnFQSFB1T",
+                    ],
+                    "am": ["993298539", "6657994053"],
+                },
+            },
+            {
+                "artist": "Nic Dean",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFEC4WFtoNRpw",
+                        "0JQ5DAqbMKFAUsdyVjCQuL",
+                        "0JQ5DAqbMKFEZPnFQSFB1T",
+                    ],
+                    "am": ["993298539", "6657994053"],
+                },
+            },
+            {
+                "artist": "Rosé",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFGaKcChsSgUO",
+                        "0JQ5DAqbMKFEC4WFtoNRpw",
+                    ],
+                    "am": ["993298539"],
+                },
+            },
+            {
+                "artist": "ian",
+                "genres": {
+                    "s": [
+                        "0JQ5DAqbMKFGaKcChsSgUO",
+                        "0JQ5DAqbMKFQIL0AXnG5AK",
+                        "0JQ5DAqbMKFQ00XGBls6ym",
+                    ],
+                    "am": ["1533338569", "993297962"],
+                },
+            },
         ]
     }
     lambda_functions = ["store-turn-spotify", "store-turn-apple"]
