@@ -521,6 +521,7 @@ def lambda_handler(event, context) -> Dict[str, Union[int, str]]:
 
     for a, tracks in res.items():
         body += f"\n{a}\n"
+        body += f"\Apple\n"
         for track_info in tracks:
             track, playlist_name, position = track_info
             body += f" - {track}: {playlist_name} | {position}\n"

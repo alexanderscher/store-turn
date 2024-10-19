@@ -241,8 +241,6 @@ def send_email_aws(subject: str, body: str) -> None:
     ses_client = boto3.client(
         "ses",
         region_name="us-east-1",
-        # aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
-        # aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
     )
     sender = os.getenv("ALEX")
 
@@ -251,8 +249,6 @@ def send_email_aws(subject: str, body: str) -> None:
             Destination={
                 "ToAddresses": [
                     os.getenv("ALEX"),
-                    # os.getenv("ARI"),
-                    # os.getenv("LAURA"),
                 ],
             },
             Message={
@@ -295,11 +291,13 @@ def lambda_handler(event: ArtistEvent, context) -> Dict[str, Union[int, str]]:
 
     for a, tracks in playlists.items():
         body += f"\n{a}\n"
+        body += f"\nSpotify\n"
         for track_info in tracks:
             track = track_info["track"]
             playlist_name = track_info["playlist"]
             position = track_info["position"]
             body += f" - {track}: {playlist_name} | {position}\n"
+
     print("Finished")
 
     subject = (
