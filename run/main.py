@@ -55,62 +55,20 @@ def lambda_handler(event, context):
     artists_payload = {
         "tracks": [
             {
-                "artist": "Dave Blunts",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFGaKcChsSgUO",
-                        "0JQ5DAqbMKFQIL0AXnG5AK",
-                        "0JQ5DAqbMKFQ00XGBls6ym",
-                    ],
-                    "am": ["1533338569", "993297962"],
-                },
-            },
-            {
                 "artist": "Steinza",
                 "genres": {
                     "s": [
                         "0JQ5DAqbMKFy78wprEpAjl",
+                        "0JQ5DAqbMKFKLfwjuJMoNC",
+                        "0JQ5DAqbMKFCWjUTdzaG0e",
                     ],
-                    "am": ["993289542", "1528193954"],
+                    "am": ["993289542", "1528193954", "1223622007", "6723904830"],
                 },
             },
             {
-                "artist": "Omido",
+                "artist": "Dave Blunts",
                 "genres": {
                     "s": [
-                        "0JQ5DAqbMKFEC4WFtoNRpw",
-                        "0JQ5DAqbMKFAUsdyVjCQuL",
-                        "0JQ5DAqbMKFEZPnFQSFB1T",
-                    ],
-                    "am": ["993298539", "6657994053"],
-                },
-            },
-            {
-                "artist": "Nic Dean",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFEC4WFtoNRpw",
-                        "0JQ5DAqbMKFAUsdyVjCQuL",
-                        "0JQ5DAqbMKFEZPnFQSFB1T",
-                    ],
-                    "am": ["993298539", "6657994053"],
-                },
-            },
-            {
-                "artist": "Rosé",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFGaKcChsSgUO",
-                        "0JQ5DAqbMKFEC4WFtoNRpw",
-                    ],
-                    "am": ["993298539"],
-                },
-            },
-            {
-                "artist": "ian",
-                "genres": {
-                    "s": [
-                        "0JQ5DAqbMKFGaKcChsSgUO",
                         "0JQ5DAqbMKFQIL0AXnG5AK",
                         "0JQ5DAqbMKFQ00XGBls6ym",
                     ],
